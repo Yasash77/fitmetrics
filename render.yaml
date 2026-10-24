@@ -1,0 +1,22 @@
+# Render Blueprint — deploys the FitMetrics API as a Python web service
+services:
+  - type: web
+    name: fitmetrics-api
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: FITPULSE_BASE_URL
+        value: https://fitpulse-api.onrender.com/api/v1
+      - key: FITPULSE_API_KEY
+        sync: false
+      - key: PARTNER_API_KEYS
+        sync: false
+      - key: DEMO_API_KEY
+        value: fm_demo_public_key
+      - key: RATE_LIMIT_PER_MIN
+        value: "60"
+      - key: PYTHON_VERSION
+        value: 3.12.4
