@@ -1,0 +1,732 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>FitPulse — 24-Formula Fitness Intelligence & Personal Metrics API</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav>
+  <div class="logo"><i>⚡</i>Fit<span>Pulse</span></div>
+  <a data-s="dash" class="on">Dashboard</a>
+  <a data-s="master">24-Formula Report</a>
+  <a data-s="meta">Metabolic &amp; Body</a>
+  <a data-s="cardio">Cardio &amp; VO₂max</a>
+  <a data-s="str">Strength &amp; Volume</a>
+  <a data-s="train">Load &amp; Readiness</a>
+  <a data-s="play">Playground</a>
+  <a data-s="docs">Docs</a>
+  <a data-s="intg">Partner Sync</a>
+  <div class="sp"></div>
+  <span class="pill" id="health">● checking…</span>
+  <button class="btn" onclick="openKey()">Get API Key</button>
+</nav>
+
+<div class="modal" id="keyModal">
+  <div class="card">
+    <h3>Get a free FitPulse API key</h3>
+    <p class="sub" style="margin-bottom:14px">Keys are sent in the <code class="mono">X-API-Key</code> header · 60 requests/min.</p>
+    <div id="keyForm">
+      <label>Name</label><input id="kName" value="Majit">
+      <label style="margin-top:10px">Email</label><input id="kMail" value="majit@vitstudent.ac.in">
+      <div id="kErr" style="color:#ef4444;font-size:13px;margin-top:8px"></div>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button class="btn" onclick="makeKey()">Generate key</button>
+        <button class="btn o" onclick="closeKey()">Cancel</button>
+      </div>
+    </div>
+    <div id="keyDone" style="display:none">
+      <label>Your FitPulse API key</label>
+      <div class="keybox" id="kOut"></div>
+      <p style="font-size:13px;color:var(--mute)">Saved in this browser — the website now uses your key.</p>
+      <button class="btn" style="margin-top:12px" onclick="closeKey()">Done</button>
+    </div>
+  </div>
+</div>
+
+<main>
+  <div id="offline" style="display:none;background:#fffbeb;border:1px solid #fde68a;border-radius:14px;padding:16px 20px;margin-bottom:22px;font-size:14px;line-height:1.6">
+    <b style="color:#b45309">The FitPulse backend isn't reachable.</b> Start it with <code class="mono">python run.py</code> inside the <code class="mono">fitpulse</code> folder, then open <code class="mono">http://localhost:8000</code>.
+    <span style="color:var(--mute)">Trying: <code class="mono" id="apiUrl"></code></span>
+  </div>
+
+  <!-- 1. DASHBOARD -->
+  <section id="dash" class="on">
+    <div class="hero">
+      <div>
+        <span class="tag">24-Formula Fitness Intelligence &amp; Reporting API · 23MIC0052</span>
+        <h1>One API Brain.<br>24 Scientific Fitness Models.</h1>
+        <p>FitPulse processes athlete telemetry across Metabolic, Cardiovascular, Strength, Training Load &amp; Body Composition engines to generate comprehensive analytical reports and power partner services like FitMetrics.</p>
+        <div class="btns">
+          <button class="btn" onclick="go('master')">Run 24-Formula Analysis</button>
+          <button class="btn o" onclick="go('play')">Open API Playground</button>
+        </div>
+      </div>
+      <div class="codebox">
+        <div class="h"><b></b><b></b><b></b>&nbsp; POST /api/v1/fitness/full-analysis</div>
+<pre><span style="color:#94a3b8">X-API-Key: fp_••••••••</span>
+{ <span class="k">"age"</span>: <span class="n">21</span>, <span class="k">"weight"</span>: <span class="n">74</span>, <span class="k">"height"</span>: <span class="n">178</span>, <span class="k">"activity"</span>: <span class="s">"running"</span> }
+<span style="color:#34d399">200 OK · 24 Formulas Synthesized</span>
+{
+  <span class="k">"tdee"</span>: <span class="n" id="hTdee">—</span>,
+  <span class="k">"vo2max"</span>: <span class="n" id="hVo2">—</span>,
+  <span class="k">"bodyFatPct"</span>: <span class="n" id="hBf">—</span>,
+  <span class="k">"readinessScore"</span>: <span class="n" id="hRdy">—</span>
+}</pre>
+      </div>
+    </div>
+
+    <div class="summary">
+      <div class="ic">🧬</div>
+      <div>
+        <div class="eyebrow" style="margin:0 0 4px">Executive Analytical Summary</div>
+        <p id="dSum">Loading live 24-formula synthesis from FitPulse API…</p>
+      </div>
+    </div>
+
+    <div class="grid4">
+      <div class="card stat"><small>Daily Energy (TDEE) <span class="chip gr" id="dBmrTag">Mifflin</span></small><div class="v" id="dTdee">—<span> kcal</span></div><small id="dBmrSub">—</small></div>
+      <div class="card stat"><small>Cardio VO₂max <span class="chip gr" id="dVo2Tag">—</span></small><div class="v" id="dVo2">—<span> ml/kg</span></div><small id="dFitAge">—</small></div>
+      <div class="card stat"><small>Body Composition <span class="chip" id="dBfTag">—</span></small><div class="v" id="dBf">—<span> % BF</span></div><small id="dBmiSub">—</small></div>
+      <div class="card stat"><small>Readiness &amp; ACWR <span class="chip gr" id="dRdyTag">—</span></small><div class="v" id="dRdy">—<span> /100</span></div><small id="dAcwrSub">—</small></div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>5-Zone Karvonen Heart-Rate Profile <span class="chip" style="float:right">Tanaka + Fox MHR</span></h3>
+        <div id="dZones"></div>
+      </div>
+      <div class="card">
+        <h3>Multi-Sport MET &amp; TRIMP Comparison</h3>
+        <table>
+          <tr><th>Sport / Activity</th><th>Duration</th><th>Avg HR</th><th>Zone</th><th>TRIMP</th><th>Burned</th></tr>
+          <tbody id="dLog"></tbody>
+        </table>
+        <div class="res" style="border:0;margin-top:6px"><span>Combined 4-Session Load</span><b id="dLogT">—</b></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. 24-FORMULA MASTER REPORT SHEET -->
+  <section id="master">
+    <div class="eyebrow">Comprehensive Analytical Engine</div>
+    <h2>24-Formula Master Fitness Report Sheet</h2>
+    <p class="sub">Enter athlete biometrics and session data once — FitPulse runs all <b>24 scientific formulas across 5 domains</b> and generates a downloadable PDF Report Sheet.</p>
+    <div class="grid2" style="grid-template-columns:1fr 1.35fr">
+      <div class="card">
+        <h3>Athlete &amp; Biometric Inputs</h3>
+        <div class="f3">
+          <div><label>Athlete Name</label><input id="mName" value="Majit · 23MIC0052"></div>
+          <div><label>Age</label><input id="mAge" value="21"></div>
+          <div><label>Gender</label><select id="mGen"><option value="male">Male</option><option value="female">Female</option></select></div>
+        </div>
+        <div class="f3">
+          <div><label>Weight (kg)</label><input id="mWt" value="74"></div>
+          <div><label>Height (cm)</label><input id="mHt" value="178"></div>
+          <div><label>Activity Level</label><select id="mActLvl"><option value="sedentary">Sedentary</option><option value="light">Light</option><option value="moderate" selected>Moderate</option><option value="active">Active</option><option value="very_active">Very Active</option></select></div>
+        </div>
+        <div class="f3">
+          <div><label>Neck (cm)</label><input id="mNk" value="38"></div>
+          <div><label>Waist (cm)</label><input id="mWa" value="84"></div>
+          <div><label>Goal</label><select id="mGoal"><option value="lose">Weight Loss</option><option value="maintain" selected>Maintain</option><option value="gain">Muscle Gain</option></select></div>
+        </div>
+        <h3 style="margin-top:14px">Sport, Cardio, Strength &amp; Recovery Inputs</h3>
+        <div class="f3">
+          <div><label>Sport Activity</label><select id="mSport"><option value="running">Running</option><option value="cycling">Cycling</option><option value="swimming">Swimming</option><option value="hiit">HIIT</option><option value="football">Football</option><option value="badminton">Badminton</option><option value="weight_training">Weight Training</option></select></div>
+          <div><label>Duration (min)</label><input id="mDur" value="45"></div>
+          <div><label>Avg HR / Rest HR</label><div style="display:flex;gap:6px"><input id="mAhr" value="172"><input id="mRhr" value="62"></div></div>
+        </div>
+        <div class="f3">
+          <div><label>5K Run Time (min)</label><input id="mPaceT" value="25"></div>
+          <div><label>Cooper 12-min (m)</label><input id="mCooper" value="2800"></div>
+          <div><label>Bench (kg × reps)</label><div style="display:flex;gap:6px"><input id="mLw" value="80"><input id="mLr" value="6"></div></div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:12px">
+          <button class="btn" style="flex:1" onclick="runMaster()">⚡ Run All 24 Formulas</button>
+          <button class="btn o" style="flex:1" onclick="downloadMasterPdf()">⬇ Download PDF Report Sheet</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Live 24-Formula Analytical Matrix <span class="chip gr" style="float:right">POST /fitness/full-analysis</span></h3>
+        <div id="mMatrix" class="matrix-grid"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. METABOLIC & BODY COMPOSITION -->
+  <section id="meta">
+    <div class="eyebrow">Domains 1 &amp; 5 · Metabolic &amp; Body Composition</div>
+    <h2>Multi-Model BMR, TDEE, Macros &amp; Anthropometry</h2>
+    <p class="sub">Compares Mifflin-St Jeor, Harris-Benedict &amp; Katch-McArdle BMR equations alongside BMI Prime, Ponderal Index, U.S. Navy Body Fat &amp; 4 Ideal Weight models.</p>
+    <div class="grid2">
+      <div class="card">
+        <h3>Metabolic Energy &amp; Macronutrient Engine <span class="chip" style="float:right">/fitness/calories</span></h3>
+        <div class="f3">
+          <div><label>Age</label><input id="eAge" value="21"></div>
+          <div><label>Gender</label><select id="eGen"><option value="male">Male</option><option value="female">Female</option></select></div>
+          <div><label>Weight (kg)</label><input id="eWt" value="74"></div>
+        </div>
+        <div class="f3">
+          <div><label>Height (cm)</label><input id="eHt" value="178"></div>
+          <div><label>Activity Level</label><select id="eAct"><option value="sedentary">Sedentary (1.2×)</option><option value="light">Light (1.375×)</option><option value="moderate" selected>Moderate (1.55×)</option><option value="active">Active (1.725×)</option><option value="very_active">Very Active (1.9×)</option></select></div>
+          <div><label>Goal</label><select id="eGoal"><option value="lose">Lose (-500)</option><option value="maintain" selected>Maintain</option><option value="gain">Gain (+350)</option></select></div>
+        </div>
+        <button class="btn" style="width:100%" onclick="calcEnergy()">Calculate Metabolic Profile</button>
+        <div id="eOut" style="margin-top:12px"></div>
+      </div>
+
+      <div class="card">
+        <h3>Anthropometry: BMI, Navy Body Fat &amp; Ideal Weight</h3>
+        <div class="f4">
+          <div><label>Height (cm)</label><input id="bHt" value="178"></div>
+          <div><label>Weight (kg)</label><input id="bWt" value="74"></div>
+          <div><label>Neck (cm)</label><input id="bNk" value="38"></div>
+          <div><label>Waist (cm)</label><input id="bWa" value="84"></div>
+        </div>
+        <button class="btn" style="width:100%" onclick="calcBody()">Analyse Body Composition</button>
+        <div id="bOut" style="margin-top:12px"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. CARDIO & VO2MAX -->
+  <section id="cardio">
+    <div class="eyebrow">Domain 2 · Cardiovascular Performance</div>
+    <h2>Pace, Riegel Race Predictor &amp; Dual-Model VO₂max</h2>
+    <p class="sub">Supports Running, Cycling &amp; Swimming pace analysis, Riegel endurance predictions, and Cooper 12-min + Uth HR-Ratio VO₂max models.</p>
+    <div class="grid2">
+      <div class="card">
+        <h3>Pace &amp; Riegel Race Predictor <span class="chip" style="float:right">/fitness/pace</span></h3>
+        <div class="f3">
+          <div><label>Activity</label><select id="pAct"><option value="running">Running</option><option value="cycling">Cycling</option><option value="swimming">Swimming</option></select></div>
+          <div><label>Distance (km)</label><input id="pDist" value="5"></div>
+          <div><label>Time (min)</label><input id="pTime" value="25"></div>
+        </div>
+        <button class="btn" style="width:100%" onclick="calcPace()">Analyse Pace &amp; Predict Races</button>
+        <div class="grid3" style="margin:16px 0 6px">
+          <div><label>Pace</label><b style="font-size:22px" id="pP">—</b><small style="color:var(--mute)"> /km</small></div>
+          <div><label>Speed</label><b style="font-size:22px" id="pS">—</b><small style="color:var(--mute)"> km/h</small></div>
+          <div><label>Model</label><small id="pM" class="mono">Riegel ^1.06</small></div>
+        </div>
+        <table><tr><th>Target Event</th><th>Predicted Finish</th><th>Target Pace</th></tr><tbody id="pTab"></tbody></table>
+      </div>
+
+      <div class="card">
+        <h3>VO₂max (Cooper + Uth) &amp; Fitness Age <span class="chip" style="float:right">/fitness/vo2max</span></h3>
+        <div class="f3">
+          <div><label>Age</label><input id="vAge" value="21"></div>
+          <div><label>Gender</label><select id="vGen"><option value="male">Male</option><option value="female">Female</option></select></div>
+          <div><label>Resting HR</label><input id="vRhr" value="62"></div>
+        </div>
+        <div class="f2">
+          <div><label>Measured Max HR (optional)</label><input id="vMhr" placeholder="auto (Tanaka)"></div>
+          <div><label>Cooper 12-min Distance m (optional)</label><input id="vCooper" value="2800"></div>
+        </div>
+        <button class="btn" style="width:100%" onclick="calcVo2()">Estimate VO₂max &amp; Fitness Age</button>
+        <div style="text-align:center;margin:16px 0 4px">
+          <b style="font-size:40px" id="vVal">—</b> <span style="color:var(--mute)">ml/kg/min</span><br>
+          <span class="chip gr" id="vRate">—</span>
+        </div>
+        <div class="lvl" id="vLvl"></div>
+        <div id="vOut" style="margin-top:10px"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. STRENGTH & SESSION VOLUME -->
+  <section id="str">
+    <div class="eyebrow">Domain 3 · Strength &amp; Muscular Analytics</div>
+    <h2>Multi-Model 1RM (Epley, Brzycki, Lombardi) &amp; Session Volume</h2>
+    <p class="sub">Benchmarks relative strength against bodyweight norms and computes muscle-group volume distribution.</p>
+    <div class="grid2" style="grid-template-columns:1fr 1.3fr">
+      <div class="card">
+        <h3>1RM &amp; Strength Classification <span class="chip" style="float:right">/fitness/strength-analysis</span></h3>
+        <div class="f2">
+          <div><label>Exercise</label><select id="sEx"><option value="bench_press">Bench press</option><option value="squat">Squat</option><option value="deadlift">Deadlift</option><option value="overhead_press">Overhead press</option></select></div>
+          <div><label>Bodyweight (kg)</label><input id="sBw" value="74"></div>
+        </div>
+        <div class="f2">
+          <div><label>Weight Lifted (kg)</label><input id="sW" value="80"></div>
+          <div><label>Reps Performed</label><input id="sR" value="6"></div>
+        </div>
+        <button class="btn" style="width:100%" onclick="calcLift()">Analyse Lift</button>
+        <div style="text-align:center;margin:16px 0 4px">
+          <label>Consensus 1RM</label><b style="font-size:38px" id="s1">—</b> <span style="color:var(--mute)">kg</span>
+        </div>
+        <div class="lvl" id="sLvl"></div>
+        <div id="sOut" style="margin-top:8px"></div>
+      </div>
+
+      <div class="card">
+        <h3>Session Volume &amp; Muscle Breakdown <span class="chip" style="float:right">/fitness/session-volume</span></h3>
+        <table class="sets"><tr><th>Exercise</th><th>Weight (kg)</th><th>Reps</th><th></th></tr><tbody id="vSets"></tbody></table>
+        <div style="display:flex;gap:8px;margin:10px 0 4px">
+          <button class="btn o" onclick="addSet()">+ Add set</button>
+          <button class="btn" onclick="calcVolume()">Analyse Session</button>
+        </div>
+        <div class="grid3" style="margin-top:14px">
+          <div><label>Total Volume</label><b style="font-size:21px" id="vVol">—</b></div>
+          <div><label>Avg Intensity</label><b style="font-size:21px" id="vInt">—</b></div>
+          <div><label>Est. Calories</label><b style="font-size:21px" id="vK">—</b></div>
+        </div>
+        <div id="vMus" style="margin-top:10px"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. TRAINING LOAD & READINESS -->
+  <section id="train">
+    <div class="eyebrow">Domain 4 · Training Load, ACWR &amp; Recovery</div>
+    <h2>ACWR Injury-Risk Chart, Monotony/Strain &amp; Readiness</h2>
+    <p class="sub">Evaluates 28-day Acute:Chronic Workload Ratio (Gabbett model) and daily readiness score (0–100).</p>
+    <div class="grid2" style="grid-template-columns:1.35fr 1fr">
+      <div class="card">
+        <h3>28-Day Training Load &amp; ACWR <span class="chip" style="float:right">/fitness/training-balance</span></h3>
+        <svg id="tChart" viewBox="0 0 600 190" style="width:100%;height:190px"></svg>
+        <div class="meter"><i id="tPin" style="left:50%"></i></div>
+        <div class="grid3" style="margin-top:14px">
+          <div><label>ACWR</label><b style="font-size:24px" id="tAc">—</b> <span class="chip" id="tZ">—</span></div>
+          <div><label>Acute / Chronic</label><b style="font-size:18px" id="tAcu">—</b></div>
+          <div><label>Monotony · Strain</label><b style="font-size:18px" id="tMon">—</b></div>
+        </div>
+        <div class="rec" id="tAdv">—</div>
+        <button class="btn o" style="margin-top:12px" onclick="spikeLoads()">Simulate Load Spike</button>
+      </div>
+
+      <div class="card">
+        <h3>Daily Readiness &amp; Recovery <span class="chip" style="float:right">/fitness/readiness</span></h3>
+        <div class="f2">
+          <div><label>Last Session Load (TRIMP)</label><input id="rL" value="121"></div>
+          <div><label>Hours Since Session</label><input id="rH" value="40"></div>
+        </div>
+        <div class="f2">
+          <div><label>Resting HR Today</label><input id="rR" value="61"></div>
+          <div><label>Baseline Resting HR</label><input id="rB" value="62"></div>
+        </div>
+        <div class="f2">
+          <div><label>Sleep (hours)</label><input id="rS" value="7.5"></div>
+          <div><label>Muscle Soreness (1–5)</label><input id="rSo" value="2"></div>
+        </div>
+        <button class="btn" style="width:100%" onclick="calcReady()">Evaluate Readiness</button>
+        <div class="ring" id="rRing"><div><span><b id="rScore">—</b><br><small id="rStat">—</small></span></div></div>
+        <div id="rBreak"></div>
+        <div class="rec" id="rRec">—</div>
+        <div id="rFlags"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. PLAYGROUND -->
+  <section id="play">
+    <div class="eyebrow">Developer Console</div>
+    <h2>Interactive API Playground</h2>
+    <p class="sub">Test any of FitPulse's 24-formula endpoints live with custom JSON payloads.</p>
+    <div class="pg">
+      <div>
+        <label>Endpoint</label>
+        <select id="pEp" onchange="fillBody()"></select>
+        <label style="margin-top:12px">Header · X-API-Key</label>
+        <input id="pKey" class="mono">
+        <label style="margin-top:12px">Request Body (JSON)</label>
+        <textarea id="pBody" rows="13"></textarea>
+        <button class="btn" style="margin-top:14px;background:var(--acc);color:#042f2e" onclick="sendPlay()">Send Request ▶</button>
+      </div>
+      <div>
+        <label>Response <span class="status" id="pStat" style="float:right"></span></label>
+        <pre id="pOut">// response will appear here</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. DOCS -->
+  <section id="docs">
+    <div class="eyebrow">API Reference</div>
+    <h2>FitPulse REST API Documentation</h2>
+    <p class="sub">Base URL <code class="mono">/api/v1</code> · Auth: <code class="mono">X-API-Key</code> header · Interactive Swagger UI at <a href="/docs" target="_blank" class="mono" style="color:var(--pri);font-weight:700">/docs</a></p>
+    <div id="dList"></div>
+  </section>
+
+  <!-- 9. PARTNER INTEGRATION -->
+  <section id="intg">
+    <div class="eyebrow">Microservice Architecture</div>
+    <h2>Partner Service Integration (FitPulse ⇄ FitMetrics)</h2>
+    <p class="sub">FitPulse (<b>23MIC0052</b>) serves as the <b>24-Formula Analytical &amp; Metabolic Intelligence Hub</b>, while FitMetrics (<b>23MIC0060</b>) tracks live workout sessions.</p>
+    <div class="flow">
+      <div class="node me"><b>FitPulse API (23MIC0052)</b><br><small style="color:var(--mute)">24-Formula Intelligence &amp; TDEE</small></div>
+      <div class="arrow">POST /api/v1/fitness/calories<b>⇄</b>POST /api/v1/metrics/workout-analysis</div>
+      <div class="node"><b>FitMetrics API (23MIC0060)</b><br><small style="color:var(--mute)">Partner Workout Telemetry</small></div>
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <h3>Live Partner Sync Test <span class="chip gr" style="float:right">/fitness/partner-sync</span></h3>
+        <div class="res"><span>Baseline TDEE (FitPulse Mifflin-St Jeor)</span><b id="iTdee">—</b></div>
+        <div class="res"><span>Workout Burn (from Partner FitMetrics)</span><b id="iBurn">—</b></div>
+        <div class="res"><span>Workout HR Zone (from Partner FitMetrics)</span><b id="iZone">—</b></div>
+        <div class="res"><span>Adjusted Daily Energy Need</span><b id="iAdj">—</b></div>
+        <button class="btn" style="margin-top:12px;width:100%" onclick="syncPartner()">Re-Sync with Partner FitMetrics</button>
+      </div>
+      <div class="card">
+        <h3>Provided to Partner FitMetrics <span class="chip" style="float:right">Contract Verified</span></h3>
+        <table>
+          <tr><th>Endpoint</th><th>Purpose</th></tr>
+          <tr><td class="mono">POST /api/v1/fitness/calories</td><td>Provides <code class="mono">bmr</code> &amp; <code class="mono">dailyCalories</code> to FitMetrics <code class="mono">/metrics/energy-balance</code></td></tr>
+          <tr><td class="mono">POST /api/v1/fitness/full-analysis</td><td>Synthesizes all 24 analytical formulas into a single report</td></tr>
+          <tr><td class="mono">POST /api/v1/reports/fitness-sheet</td><td>Generates downloadable A4 PDF analytical report sheet</td></tr>
+        </table>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+const API = new URLSearchParams(location.search).get('api')
+  || (location.protocol.startsWith('http') ? location.origin + '/api/v1' : 'http://localhost:8000/api/v1');
+const DEMO = 'fp_demo_public_key';
+const $ = id => document.getElementById(id);
+const store = {
+  get(){ try { return localStorage.getItem('fp_key') || null; } catch(e) { return null; } },
+  set(v){ try { v ? localStorage.setItem('fp_key', v) : localStorage.removeItem('fp_key'); } catch(e) {} }
+};
+let KEY = store.get() || DEMO;
+const hdr = () => ({'Content-Type': 'application/json', 'X-API-Key': KEY});
+
+async function post(p, b, retried) {
+  let r; const used = KEY;
+  try { r = await fetch(API + p, {method: 'POST', headers: hdr(), body: JSON.stringify(b)}); }
+  catch(e) { offline(true); return {success: false, error: 'Cannot reach FitPulse API at ' + API}; }
+  if (r.status === 401 && used !== DEMO && !retried) { resetKey(); return post(p, b, true); }
+  try { return await r.json(); } catch(e) { return {success: false, error: 'Unexpected response (' + r.status + ')'}; }
+}
+
+function resetKey() { KEY = DEMO; store.set(''); if ($('pKey')) $('pKey').value = DEMO; health(); }
+function offline(on) { if ($('offline')) $('offline').style.display = on ? 'block' : 'none'; }
+const v = id => +$(id).value;
+const row = (k, val, c='') => `<div class="res"><span>${k}</span><b>${val} ${c}</b></div>`;
+
+const LOADS = [55,0,70,0,60,85,0, 60,0,75,0,65,90,0, 65,0,80,0,70,95,0, 121,0,68,0,47,95,0];
+let loads = LOADS.slice();
+let SETS = [['bench_press',80,6],['bench_press',80,6],['squat',100,5],['squat',100,5],['barbell_row',60,10],['overhead_press',45,8]];
+
+const EPS = {
+  '/fitness/full-analysis': {g:'Master 24-Formula Engine', d:'Runs all 24 scientific formulas across 5 domains in one call', b:{athlete:'Majit · 23MIC0052',age:21,gender:'male',height:178,weight:74,neck:38,waist:84,activityLevel:'moderate',goal:'maintain',activity:'running',duration:45,avgHr:172,restingHr:62,cooperDistance:2800,distanceKm:5,paceDurationMin:25,exercise:'bench_press',liftWeight:80,liftReps:6}},
+  '/fitness/calories': {g:'Metabolic & Energy (Formulas 1–4)', d:'Mifflin-St Jeor, Harris-Benedict, Katch-McArdle BMR, TDEE & Macros (FitMetrics Partner Endpoint)', b:{age:21,gender:'male',height:178,weight:74,activityLevel:'moderate',goal:'maintain',bodyFatPct:15.7}},
+  '/fitness/activity-burn': {g:'Metabolic & Energy (Formulas 1–4)', d:'MET-based calorie expenditure for 12 sports & activities', b:{activity:'running',duration:45,weight:74}},
+  '/fitness/heart-rate-zones': {g:'Cardiovascular (Formulas 5–10)', d:'Tanaka, Fox & Gellish MHR + 5 Karvonen HR zones', b:{age:21,restingHr:62}},
+  '/fitness/vo2max': {g:'Cardiovascular (Formulas 5–10)', d:'Cooper 12-min & Uth HR-ratio VO2max + Fitness Age', b:{age:21,gender:'male',restingHr:62,cooperDistance:2800}},
+  '/fitness/pace': {g:'Cardiovascular (Formulas 5–10)', d:'Pace, speed & Riegel race time predictions', b:{activity:'running',distance:5,duration:25}},
+  '/fitness/strength-analysis': {g:'Strength & Power (Formulas 11–15)', d:'Epley, Brzycki & Lombardi 1RM, Relative Strength & Level', b:{exercise:'bench_press',weight:80,reps:6,bodyweight:74}},
+  '/fitness/session-volume': {g:'Strength & Power (Formulas 11–15)', d:'Total session volume, intensity & muscle-group breakdown', b:{bodyweight:74,sets:[{exercise:'bench_press',weight:80,reps:6},{exercise:'squat',weight:100,reps:5}]}},
+  '/fitness/workout-analysis': {g:'Training Load & Recovery (Formulas 16–20)', d:'Banister & Edwards TRIMP, %HRR zone, recovery & hydration', b:{activity:'running',duration:45,weight:74,age:21,restingHr:62,avgHr:172,gender:'male',climate:'normal'}},
+  '/fitness/training-balance': {g:'Training Load & Recovery (Formulas 16–20)', d:'28-day ACWR injury risk, Foster monotony & strain', b:{dailyLoads:LOADS}},
+  '/fitness/readiness': {g:'Training Load & Recovery (Formulas 16–20)', d:'0–100 daily readiness score & training recommendation', b:{lastLoad:121,hoursSince:40,restingHr:61,baselineRestingHr:62,sleepHours:7.5,soreness:2}},
+  '/fitness/hydration': {g:'Training Load & Recovery (Formulas 16–20)', d:'ACSM sweat loss & fluid/electrolyte replacement plan', b:{weight:74,duration:45,intensity:'high',climate:'normal'}},
+  '/fitness/bmi': {g:'Body Composition (Formulas 21–24)', d:'BMI, BMI Prime, Rohrer Ponderal Index & healthy range', b:{weight:74,height:178}},
+  '/fitness/body-fat': {g:'Body Composition (Formulas 21–24)', d:'U.S. Navy body-fat %, fat mass & lean body mass', b:{gender:'male',height:178,neck:38,waist:84,weight:74}},
+  '/fitness/ideal-weight': {g:'Body Composition (Formulas 21–24)', d:'Hamwi, Devine, Robinson & Miller ideal bodyweight models', b:{height:178,gender:'male'}},
+  '/fitness/partner-sync': {g:'Partner Integration', d:'Live service-to-service sync with FitMetrics API (23MIC0060)', b:{activity:'running',duration:45,weight:74,age:21,restingHr:62,avgHr:172}},
+  '/reports/fitness-sheet': {g:'Reports & Keys', d:'Download 24-Formula Master PDF Report Sheet', b:{athlete:'Majit · 23MIC0052',age:21,gender:'male',height:178,weight:74}}
+};
+
+function go(s) {
+  document.querySelectorAll('nav a').forEach(a => a.classList.toggle('on', a.dataset.s === s));
+  document.querySelectorAll('section').forEach(x => x.classList.toggle('on', x.id === s));
+}
+document.querySelectorAll('nav a').forEach(a => a.onclick = () => go(a.dataset.s));
+
+function openKey() { $('keyModal').classList.add('on'); $('keyForm').style.display=''; $('keyDone').style.display='none'; }
+function closeKey() { $('keyModal').classList.remove('on'); }
+async function makeKey() {
+  const r = await fetch(API + '/keys', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({name:$('kName').value, email:$('kMail').value})}).then(r=>r.json()).catch(()=>({success:false,error:'Backend offline'}));
+  if (!r.success) { $('kErr').textContent = r.error || 'Failed'; return; }
+  KEY = r.data.apiKey; store.set(KEY); $('kOut').textContent = KEY;
+  $('keyForm').style.display='none'; $('keyDone').style.display=''; $('pKey').value = KEY; health();
+}
+
+function health() {
+  return fetch(API + '/health').then(r => r.json()).then(() => {
+    offline(false);
+    $('health').textContent = '● 24-Formula Engine Online';
+    return true;
+  }).catch(() => {
+    offline(true);
+    $('health').textContent = '● API Offline';
+    return false;
+  });
+}
+
+const ZC = ['#93c5fd', '#34d399', '#fde047', '#fb923c', '#f43f5e'];
+function zonesHtml(z, max, hr) {
+  return z.map((r, i) => `<div class="zone ${hr >= r.min && hr <= r.max ? 'hl' : ''}"><span>${r.zone}</span><div class="bar"><i style="width:${r.max/max*100}%;background:${ZC[i]}"></i></div><b>${r.min}–${r.max}</b></div>`).join('');
+}
+
+async function loadDash() {
+  const res = await post('/fitness/full-analysis', EPS['/fitness/full-analysis'].b);
+  if (!res.success) return;
+  const d = res.data;
+  $('hTdee').textContent = d.metabolic.tdee;
+  $('hVo2').textContent = d.cardio.vo2max.vo2max;
+  $('hBf').textContent = d.bodyComposition.bodyFat.bodyFat;
+  $('hRdy').textContent = d.trainingLoad.readiness.readinessScore;
+  $('dSum').textContent = `${d.workout.summary} Daily maintenance is ${d.metabolic.tdee} kcal (Mifflin BMR ${d.metabolic.bmrMifflinStJeor} kcal, Harris-Benedict ${d.metabolic.bmrHarrisBenedict} kcal). VO₂max is ${d.cardio.vo2max.vo2max} ml/kg/min (${d.cardio.vo2max.rating}, Fitness Age ${d.bodyComposition.fitnessAge}).`;
+  $('dTdee').innerHTML = d.metabolic.tdee + '<span> kcal</span>';
+  $('dBmrSub').textContent = `BMR: ${d.metabolic.bmrMifflinStJeor} (Mifflin) · ${d.metabolic.bmrHarrisBenedict} (Harris)`;
+  $('dVo2').innerHTML = d.cardio.vo2max.vo2max + '<span> ml/kg</span>';
+  $('dVo2Tag').textContent = d.cardio.vo2max.rating;
+  $('dFitAge').textContent = `Fitness Age: ${d.bodyComposition.fitnessAge} yrs · Uth: ${d.cardio.vo2max.vo2maxUth}`;
+  $('dBf').innerHTML = d.bodyComposition.bodyFat.bodyFat + '<span> %</span>';
+  $('dBfTag').textContent = d.bodyComposition.bodyFat.category;
+  $('dBmiSub').textContent = `BMI ${d.bodyComposition.bmi.bmi} · Lean Mass ${d.bodyComposition.bodyFat.leanMass} kg`;
+  $('dRdy').innerHTML = d.trainingLoad.readiness.readinessScore + '<span> /100</span>';
+  $('dRdyTag').textContent = d.trainingLoad.readiness.status;
+  $('dAcwrSub').textContent = `ACWR ${d.trainingLoad.balance.acwr} (${d.trainingLoad.balance.zone})`;
+
+  const z = d.cardio.zones;
+  $('dZones').innerHTML = zonesHtml(z.zones, z.maxHr, 172) + `<p style="color:var(--mute);font-size:12px;margin-top:10px">Tanaka Max HR: ${z.tanaka} bpm · Fox: ${z.fox} bpm · Gellish: ${z.gellish} bpm · HRR: ${z.heartRateReserve} bpm</p>`;
+
+  const sessions = [['running', 45, 172], ['swimming', 40, 158], ['cycling', 60, 145], ['badminton', 50, 152]];
+  let tot = 0, rows = '';
+  for (const [ac, dur, hr] of sessions) {
+    const w = (await post('/fitness/workout-analysis', {activity: ac, duration: dur, weight: 74, age: 21, restingHr: 62, avgHr: hr})).data;
+    if (w) {
+      tot += w.trainingLoad;
+      rows += `<tr><td style="text-transform:capitalize">${ac}</td><td>${dur} min</td><td>${hr} bpm</td><td><span class="chip">${w.zone.split(' ·')[0]}</span></td><td>${w.trainingLoad}</td><td><b>${w.caloriesBurned} kcal</b></td></tr>`;
+    }
+  }
+  $('dLog').innerHTML = rows;
+  $('dLogT').textContent = tot + ' TRIMP';
+}
+
+function masterPayload() {
+  return {
+    athlete: $('mName').value,
+    age: v('mAge'),
+    gender: $('mGen').value,
+    weight: v('mWt'),
+    height: v('mHt'),
+    activityLevel: $('mActLvl').value,
+    neck: v('mNk'),
+    waist: v('mWa'),
+    goal: $('mGoal').value,
+    activity: $('mSport').value,
+    duration: v('mDur'),
+    avgHr: v('mAhr'),
+    restingHr: v('mRhr'),
+    paceDurationMin: v('mPaceT'),
+    cooperDistance: v('mCooper'),
+    liftWeight: v('mLw'),
+    liftReps: v('mLr')
+  };
+}
+
+async function runMaster() {
+  const res = await post('/fitness/full-analysis', masterPayload());
+  if (!res.success) return;
+  $('mMatrix').innerHTML = res.data.formulasSummary.map(f => `
+    <div class="formula-row">
+      <div><span class="num">${f.id}</span><b>${f.name}</b><br><small style="color:var(--mute);margin-left:34px">${f.domain}</small></div>
+      <span class="chip gr" style="font-size:12px">${f.value}</span>
+    </div>
+  `).join('');
+}
+
+async function downloadMasterPdf() {
+  const r = await fetch(API + '/reports/fitness-sheet', {method: 'POST', headers: hdr(), body: JSON.stringify(masterPayload())});
+  if (!r.ok) return;
+  const b = await r.blob();
+  const u = URL.createObjectURL(b);
+  const a = document.createElement('a');
+  a.href = u;
+  a.download = 'fitpulse-24-formula-report.pdf';
+  a.click();
+}
+
+async function calcEnergy() {
+  const res = await post('/fitness/calories', {age: v('eAge'), gender: $('eGen').value, weight: v('eWt'), height: v('eHt'), activityLevel: $('eAct').value, goal: $('eGoal').value, bodyFatPct: 15.7});
+  if (!res.success) return;
+  const d = res.data;
+  $('eOut').innerHTML =
+    row('1. Mifflin-St Jeor BMR', d.bmrMifflinStJeor + ' kcal/day') +
+    row('2. Harris-Benedict BMR', d.bmrHarrisBenedict + ' kcal/day') +
+    row('3. Katch-McArdle BMR', (d.bmrKatchMcArdle || '—') + ' kcal/day') +
+    row('Maintenance TDEE', d.tdee + ' kcal/day', `<span class="chip gr">${d.activityMultiplier}×</span>`) +
+    row('Target Goal Calories', d.targetCalories + ' kcal/day') +
+    row('Macronutrient Split', `${d.macros.proteinGrams}g P · ${d.macros.carbsGrams}g C · ${d.macros.fatGrams}g F`);
+}
+
+async function calcBody() {
+  const [bmi, bf, ibw] = await Promise.all([
+    post('/fitness/bmi', {weight: v('bWt'), height: v('bHt')}),
+    post('/fitness/body-fat', {gender: 'male', height: v('bHt'), neck: v('bNk'), waist: v('bWa'), weight: v('bWt')}),
+    post('/fitness/ideal-weight', {height: v('bHt'), gender: 'male'})
+  ]);
+  if (!bmi.success || !bf.success || !ibw.success) return;
+  $('bOut').innerHTML =
+    row('21. Body Mass Index (BMI)', bmi.data.bmi + ' kg/m²', `<span class="chip gr">${bmi.data.category}</span>`) +
+    row('BMI Prime & Ponderal Index', `${bmi.data.bmiPrime} · ${bmi.data.ponderalIndex} kg/m³`) +
+    row('22. U.S. Navy Body Fat %', bf.data.bodyFat + '%', `<span class="chip">${bf.data.category}</span>`) +
+    row('Fat Mass / Lean Body Mass', `${bf.data.fatMass} kg / ${bf.data.leanMass} kg`) +
+    row('23. Ideal Weight (Hamwi / Devine)', `${ibw.data.hamwiKg} kg / ${ibw.data.devineKg} kg`) +
+    row('Ideal Weight (Robinson / Miller)', `${ibw.data.robinsonKg} kg / ${ibw.data.millerKg} kg`);
+}
+
+async function calcPace() {
+  const r = await post('/fitness/pace', {activity: $('pAct').value, distance: v('pDist'), duration: v('pTime')});
+  if (!r.success) return;
+  const p = r.data;
+  $('pP').textContent = p.paceMinPerKm;
+  $('pS').textContent = p.speedKmh;
+  $('pTab').innerHTML = Object.entries(p.predictions || {}).map(([k, x]) => `<tr><td><b>${k}</b></td><td>${x.time}</td><td>${x.paceMinPerKm}</td></tr>`).join('');
+}
+
+async function calcVo2() {
+  const b = {age: v('vAge'), gender: $('vGen').value, restingHr: v('vRhr')};
+  if ($('vMhr').value) b.maxHr = v('vMhr');
+  if ($('vCooper').value) b.cooperDistance = v('vCooper');
+  const r = await post('/fitness/vo2max', b);
+  if (!r.success) return;
+  const x = r.data;
+  $('vVal').textContent = x.vo2max;
+  $('vRate').textContent = x.rating;
+  $('vLvl').innerHTML = ['Poor','Fair','Good','Excellent','Superior'].map(l => `<span class="${l === x.rating ? 'on' : ''}">${l}</span>`).join('');
+  $('vOut').innerHTML =
+    row('7. Cooper 12-min VO₂max', (x.vo2maxCooper || '—') + ' ml/kg/min') +
+    row('8. Uth HR-Ratio VO₂max', x.vo2maxUth + ' ml/kg/min') +
+    row('24. Physiological Fitness Age', x.fitnessAge + ' years');
+}
+
+async function calcLift() {
+  const r = await post('/fitness/strength-analysis', {exercise: $('sEx').value, weight: v('sW'), reps: v('sR'), bodyweight: v('sBw')});
+  if (!r.success) return;
+  const t = r.data;
+  $('s1').textContent = t.oneRepMax;
+  $('sLvl').innerHTML = ['Beginner','Novice','Intermediate','Advanced','Elite'].map(l => `<span class="${l === t.strengthLevel ? 'on' : ''}">${l}</span>`).join('');
+  $('sOut').innerHTML =
+    row('11. Epley 1RM', t.epley + ' kg') +
+    row('12. Brzycki / Lombardi 1RM', `${t.brzycki} kg / ${t.lombardi} kg`) +
+    row('13. Relative Strength', t.relativeStrength + '× BW') +
+    row('14. Strength Level', t.strengthLevel + (t.nextLevel ? ` (next: ${t.nextLevel} @ ${t.nextLevelAt} kg)` : ''));
+}
+
+function drawSets() {
+  $('vSets').innerHTML = SETS.map((s, i) => `<tr><td><input value="${s[0]}" onchange="SETS[${i}][0]=this.value"></td><td><input value="${s[1]}" onchange="SETS[${i}][1]=+this.value"></td><td><input value="${s[2]}" onchange="SETS[${i}][2]=+this.value"></td><td><button class="x" onclick="SETS.splice(${i},1);drawSets()">✕</button></td></tr>`).join('');
+}
+function addSet() { SETS.push(['overhead_press', 45, 8]); drawSets(); }
+
+async function calcVolume() {
+  const r = await post('/fitness/session-volume', {bodyweight: 74, sets: SETS.map(s => ({exercise: s[0], weight: s[1], reps: s[2]}))});
+  if (!r.success) return;
+  const d = r.data;
+  $('vVol').textContent = d.totalVolumeKg.toLocaleString() + ' kg';
+  $('vInt').textContent = d.avgIntensityPct + '%';
+  $('vK').textContent = d.estimatedCalories + ' kcal';
+  const mx = Math.max(...Object.values(d.muscleGroups).map(m => m.sets));
+  $('vMus').innerHTML = Object.entries(d.muscleGroups).map(([k, m]) => `<div class="hbar"><span style="text-transform:capitalize">${k}</span><div class="bar"><i style="width:${m.sets/mx*100}%;background:var(--pri)"></i></div><b>${m.sets} sets</b></div>`).join('');
+}
+
+function drawLoadChart(t) {
+  const W = 600, H = 170, bw = W / 28, mx = Math.max(...loads, 1);
+  let s = '';
+  loads.forEach((x, i) => {
+    const h = x / mx * (H - 20);
+    s += `<rect x="${i*bw+3}" y="${H-h}" width="${bw-6}" height="${h}" rx="3" fill="${i>=21?'#10b981':'#99f6e4'}"/>`;
+  });
+  const cy = H - t.chronicLoad / mx * (H - 20), ay = H - t.acuteLoad / mx * (H - 20);
+  s += `<line x1="0" x2="${W}" y1="${cy}" y2="${cy}" stroke="#0f766e" stroke-dasharray="5 4"/>`;
+  s += `<line x1="${21*bw}" x2="${W}" y1="${ay}" y2="${ay}" stroke="#047857" stroke-width="2"/>`;
+  $('tChart').innerHTML = s;
+}
+
+async function calcBalance() {
+  const r = await post('/fitness/training-balance', {dailyLoads: loads});
+  if (!r.success) return;
+  const t = r.data;
+  drawLoadChart(t);
+  $('tPin').style.left = Math.min(t.acwr / 2.5 * 100, 99) + '%';
+  $('tAc').textContent = t.acwr;
+  $('tZ').textContent = t.zone;
+  $('tAcu').textContent = t.acuteLoad + ' / ' + t.chronicLoad;
+  $('tMon').textContent = (t.monotony ?? '—') + ' · ' + (t.strain ?? '—');
+  $('tAdv').innerHTML = `<b>Injury Risk: ${t.injuryRisk}.</b> ${t.advice}`;
+}
+
+function spikeLoads() {
+  loads = LOADS.slice(0, 21).concat([150, 125, 160, 0, 175, 140, 130]);
+  calcBalance();
+}
+
+async function calcReady() {
+  const res = await post('/fitness/readiness', {lastLoad: v('rL'), hoursSince: v('rH'), restingHr: v('rR'), baselineRestingHr: v('rB'), sleepHours: v('rS'), soreness: v('rSo')});
+  if (!res.success) return;
+  const r = res.data;
+  $('rRing').style.background = `conic-gradient(#0f766e ${r.readinessScore*3.6}deg, #e2e8f0 0)`;
+  $('rScore').textContent = r.readinessScore;
+  $('rStat').textContent = r.status;
+  const B = r.breakdown;
+  $('rBreak').innerHTML = [['Recovery',B.recovery,50],['Heart rate',B.heartRate,25],['Sleep',B.sleep,15],['Soreness',B.soreness,10]].map(([k,x,m]) => `<div class="hbar"><span>${k}</span><div class="bar"><i style="width:${x/m*100}%;background:var(--pri2)"></i></div><b>${x}/${m}</b></div>`).join('');
+  $('rRec').innerHTML = `<b>Recommendation: ${r.recommendation.type}</b> — ${r.recommendation.zone} (${r.recommendation.durationMin} min)`;
+  $('rFlags').innerHTML = r.flags.map(f => `<div class="flag">⚠ ${f}</div>`).join('');
+}
+
+async function syncPartner() {
+  const r = await post('/fitness/partner-sync', EPS['/fitness/partner-sync'].b);
+  if (r.success) {
+    $('iTdee').textContent = r.data.baselineTdee + ' kcal/day';
+    $('iBurn').textContent = r.data.workoutBurnFromFitMetrics + ' kcal';
+    $('iZone').textContent = r.data.workoutZoneFromFitMetrics;
+    $('iAdj').textContent = r.data.adjustedDailyCalorieTarget + ' kcal/day';
+  } else {
+    $('iTdee').textContent = 'Partner FitMetrics unreachable (503)';
+  }
+}
+
+function fillBody() { $('pBody').value = JSON.stringify(EPS[$('pEp').value].b, null, 2); }
+async function sendPlay() {
+  const ep = $('pEp').value, t = performance.now();
+  let r;
+  try { JSON.parse($('pBody').value); } catch(e) { $('pStat').textContent = 'invalid JSON'; return; }
+  try { r = await fetch(API + ep, {method:'POST', headers:{'Content-Type':'application/json','X-API-Key':$('pKey').value}, body:$('pBody').value}); }
+  catch(e) { $('pStat').textContent = 'network error'; return; }
+  const ms = Math.round(performance.now() - t);
+  $('pStat').textContent = `${r.status} · ${ms} ms`;
+  if ((r.headers.get('content-type') || '').includes('pdf')) {
+    $('pOut').textContent = '// PDF binary response — use the 24-Formula Report tab to download.';
+    return;
+  }
+  $('pOut').textContent = JSON.stringify(await r.json(), null, 2);
+}
+
+$('pEp').innerHTML = Object.keys(EPS).map(k => `<option value="${k}">POST ${k}</option>`).join('');
+$('pEp').value = '/fitness/full-analysis';
+fillBody();
+$('pKey').value = KEY;
+$('apiUrl').textContent = API;
+
+let g = '';
+$('dList').innerHTML = `<div class="grp">System</div><div class="ep"><div class="t"><span class="m get">GET</span><code>/api/v1/health</code><span>Service & 24-formula engine status</span></div></div>` +
+  Object.entries(EPS).map(([k, e]) => {
+    const h = e.g !== g ? `<div class="grp">${e.g}</div>` : '';
+    g = e.g;
+    return h + `<div class="ep"><div class="t"><span class="m">POST</span><code>/api/v1${k}</code><span>${e.d}</span></div></div>`;
+  }).join('');
+
+drawSets();
+health().then(up => {
+  if (!up) return;
+  loadDash();
+  runMaster();
+  calcEnergy();
+  calcBody();
+  calcPace();
+  calcVo2();
+  calcLift();
+  calcVolume();
+  calcBalance();
+  calcReady();
+  syncPartner();
+});
+</script>
+</body>
+</html>
