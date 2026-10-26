@@ -171,6 +171,8 @@ def age_from_dob(dob: date) -> int:
 
 def programme_weeks(profile: dict) -> Optional[float]:
     tl = profile.get("timeline")
+    if tl is not None:
+        tl = str(tl).strip()
     if tl in ("4", "8", "12", "16"):
         return float(tl)
     if tl == "custom" and profile.get("targetDate"):
@@ -181,13 +183,20 @@ def programme_weeks(profile: dict) -> Optional[float]:
 
 
 def label(field_id: str, value: Any) -> Any:
-    """Human label for an option value (used in summaries)."""
+    """Human label for an option value (used in summaries). Works for both top-level and discipline-specific fields."""
     cfg = load()
+    fields = []
     for step in cfg["steps"]:
-        for f in step["fields"]:
-            if f["id"] == field_id:
-                m = {o["value"]: o["label"] for o in f.get("options", [])}
-                if isinstance(value, list):
-                    return [m.get(x, x) for x in value]
-                return m.get(value, value)
+        for f in step.get("fields", []):
+            if f.get("id") == field_id:
+                fields.append(f)
+    for meta in cfg.get("disciplines", {}).values():
+        for f in meta.get("fields", []):
+            if f.get("id") == field_id:
+                fields.append(f)
+    for field in fields:
+        m = {str(o["value"]): o["label"] for o in field.get("options", [])}
+        if isinstance(value, list):
+            return [m.get(str(x), x) for x in value]
+        return m.get(str(value), value)
     return value
