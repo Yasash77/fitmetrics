@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException
 
 from .. import schemas as s
 from ..clients import fitpulse
-from ..engine import body, cardio, strength, training, workout
+from ..engine import cardio, strength, training, workout
 from ..security import require_api_key
 
 router = APIRouter(prefix="/metrics", tags=["Metrics"], dependencies=[Depends(require_api_key)])
@@ -71,12 +71,6 @@ def strength_analysis(d: s.StrengthIn):
 @router.post("/session-volume", summary="Strength session volume & muscle breakdown")
 def session_volume(d: s.SessionVolumeIn):
     return ok(strength.session_volume([x.model_dump() for x in d.sets], d.bodyweight, d.duration))
-
-
-# ---------------------------------------------------------------- body (secondary)
-@router.post("/body-fat", summary="Body-fat %, fat & lean mass (secondary)")
-def body_fat(d: s.BodyFatIn):
-    return ok(body.body_fat(d.gender, d.height, d.neck, d.waist, d.hip, d.weight))
 
 
 # ---------------------------------------------------------------- partner integration

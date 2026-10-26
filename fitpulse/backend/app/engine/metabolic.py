@@ -1,4 +1,4 @@
-"""Domain 1: Metabolic & Energy Expenditure Analytics (Formulas 1–4)."""
+"""Energy-needs engine — multi-model BMR, TDEE, goal calories and macronutrient targets."""
 from __future__ import annotations
 
 
@@ -31,22 +31,6 @@ MACRO_SPLITS = {
     "gain": (0.30, 0.45, 0.25),
     "muscle_gain": (0.30, 0.45, 0.25),
 }
-
-MET_TABLE = {
-    "walking": 3.5,
-    "running": 9.8,
-    "cycling": 7.5,
-    "swimming": 8.0,
-    "weight_training": 6.0,
-    "yoga": 2.5,
-    "hiit": 8.0,
-    "skipping": 12.3,
-    "football": 7.0,
-    "badminton": 5.5,
-    "rowing": 7.0,
-    "boxing": 7.8,
-}
-
 
 def bmr_mifflin(weight: float, height: float, age: int, gender: str) -> float:
     """Formula 1: Mifflin-St Jeor BMR equation (kcal/day)."""
@@ -118,21 +102,4 @@ def energy_profile(
             "carbsPct": round(c_ratio * 100),
             "fatPct": round(f_ratio * 100),
         },
-    }
-
-
-def activity_calories(activity: str, duration_min: float, weight_kg: float) -> dict:
-    """Formula 4: Activity-Specific Calorie Burn (METs-based)."""
-    met = MET_TABLE.get(activity)
-    if met is None:
-        raise MetricError(f"unknown activity '{activity}' — use one of {sorted(MET_TABLE)}")
-    burned = round(met * weight_kg * (duration_min / 60))
-    return {
-        "activity": activity,
-        "met": met,
-        "durationMin": duration_min,
-        "weightKg": weight_kg,
-        "caloriesBurned": burned,
-        "caloriesPerMin": round(burned / duration_min, 2),
-        "formula": "MET × Weight(kg) × Duration(hr)",
     }

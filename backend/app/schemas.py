@@ -86,15 +86,6 @@ class Vo2maxIn(BaseModel):
     cooperDistance: Optional[float] = Field(None, description="metres covered in a 12-min run (optional)")
 
 
-class BodyFatIn(BaseModel):
-    gender: Gender
-    height: float = Field(..., gt=50, lt=260)
-    neck: float = Field(..., gt=10, lt=80)
-    waist: float = Field(..., gt=30, lt=250)
-    hip: Optional[float] = Field(None, gt=30, lt=250)
-    weight: Optional[float] = Field(None, gt=20, lt=400)
-
-
 class EnergyBalanceIn(BaseModel):
     age: int = Field(..., ge=10, le=100)
     gender: Gender

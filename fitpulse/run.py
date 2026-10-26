@@ -5,9 +5,15 @@ FitPulse — one-command launcher.
 
 What it does:
   1. installs the backend requirements if any are missing,
-  2. starts a local stand-in for the partner FitMetrics API (only if FITMETRICS_BASE_URL is not set),
-  3. starts the FitPulse 24-Formula API + website on http://localhost:8000,
+  2. starts the partner FitMetrics API from the parent folder (or a small stand-in) unless FITMETRICS_BASE_URL is set,
+  3. starts the FitPulse API + website on http://localhost:8000,
   4. opens the website in your browser.
+
+Use a deployed FitMetrics instead of the local one:
+    Windows (cmd):       set FITMETRICS_BASE_URL=https://<fitmetrics-url>/api/v1 && python run.py
+    PowerShell:          $env:FITMETRICS_BASE_URL="https://<fitmetrics-url>/api/v1"; python run.py
+    macOS / Linux:       FITMETRICS_BASE_URL=https://<fitmetrics-url>/api/v1 python run.py
+Stop with Ctrl+C.
 """
 import importlib
 import os
@@ -21,13 +27,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 BACKEND = ROOT / "backend"
-REQUIRED = {
-    "fastapi": "fastapi",
-    "uvicorn": "uvicorn",
-    "httpx": "httpx",
-    "pydantic": "pydantic",
-    "reportlab": "reportlab",
-}
+REQUIRED = {"fastapi": "fastapi", "uvicorn": "uvicorn[standard]", "httpx": "httpx",
+            "pydantic": "pydantic", "reportlab": "reportlab"}
 
 
 def check_python():
@@ -50,16 +51,8 @@ def ensure_packages():
         pass
     if missing:
         print(f"Installing missing packages: {', '.join(missing)} ...")
-        try:
-            subprocess.check_call([sys.executable, "-m", "pip", "install", "--user", "--upgrade", *missing])
-        except subprocess.CalledProcessError:
-            subprocess.check_call([sys.executable, "-m", "pip", "install", "--upgrade", *missing])
-        import site
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "--upgrade", *missing])
         importlib.invalidate_caches()
-        if hasattr(site, "getusersitepackages"):
-            user_site = site.getusersitepackages()
-            if user_site not in sys.path:
-                sys.path.insert(0, user_site)
 
 
 def port_free(port: int) -> bool:
@@ -89,43 +82,38 @@ def main():
     os.chdir(BACKEND)
     sys.path.insert(0, str(BACKEND))
 
+    port = free_port(int(os.getenv("PORT", "8000")))
     stub = None
     if not os.getenv("FITMETRICS_BASE_URL"):
-        stub_port = free_port(8001)
-        stub = subprocess.Popen(
-            [
-                sys.executable,
-                "-m",
-                "uvicorn",
-                "fitmetrics_stub:app",
-                "--host",
-                "127.0.0.1",
-                "--port",
-                str(stub_port),
-                "--log-level",
-                "warning",
-            ],
-            cwd=str(BACKEND),
-        )
+        stub_port = free_port(port + 1)
+        partner_dir = ROOT.parent / "backend"
+        env = dict(os.environ, FITPULSE_BASE_URL=f"http://127.0.0.1:{port}/api/v1")
+        if (partner_dir / "app" / "main.py").exists() and (partner_dir / "app" / "engine" / "workout.py").exists():
+            # real FitMetrics project (Yasash S, 23MIC0060) lives one folder up in this repo
+            cmd, cwd = [sys.executable, "-m", "uvicorn", "app.main:app"], partner_dir
+            partner = f"FitMetrics (from ../backend) on port {stub_port}"
+        else:
+            cmd, cwd = [sys.executable, "-m", "uvicorn", "fitmetrics_stub:app"], BACKEND
+            partner = f"local FitMetrics stand-in on port {stub_port}"
+        stub = subprocess.Popen(cmd + ["--host", "127.0.0.1", "--port", str(stub_port), "--log-level", "warning"],
+                                cwd=str(cwd), env=env)
         os.environ["FITMETRICS_BASE_URL"] = f"http://127.0.0.1:{stub_port}/api/v1"
         wait_until_up(stub_port)
-        partner = f"local FitMetrics stand-in on port {stub_port} (set FITMETRICS_BASE_URL to use Yasash's real API)"
+        partner += " — set FITMETRICS_BASE_URL to use a deployed FitMetrics"
     else:
         partner = os.environ["FITMETRICS_BASE_URL"]
 
-    port = free_port(int(os.getenv("PORT", "8000")))
     url = f"http://localhost:{port}"
-    print("\n" + "=" * 68)
-    print(f"  FitPulse website (24-Formula UI) : {url}")
-    print(f"  API docs (Swagger)               : {url}/docs")
-    print(f"  Partner FitMetrics               : {partner}")
-    print("  Stop                             : Ctrl+C")
-    print("=" * 68 + "\n")
+    print("\n" + "=" * 64)
+    print(f"  FitPulse website   : {url}")
+    print(f"  API docs (Swagger) : {url}/docs")
+    print(f"  Partner FitMetrics : {partner}")
+    print("  Stop               : Ctrl+C")
+    print("=" * 64 + "\n")
 
     def open_browser():
         if wait_until_up(port):
             webbrowser.open(url)
-
     if os.getenv("NO_BROWSER") != "1":
         threading.Thread(target=open_browser, daemon=True).start()
 

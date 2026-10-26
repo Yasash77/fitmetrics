@@ -5,7 +5,7 @@ FitMetrics — one-command launcher.
 
 What it does:
   1. installs the backend requirements if any are missing,
-  2. starts a local stand-in for the partner FitPulse API (only if FITPULSE_BASE_URL is not set),
+  2. starts the partner FitPulse API from ./fitpulse (or a small stand-in) unless FITPULSE_BASE_URL is set,
   3. starts the FitMetrics API + website on http://localhost:8000,
   4. opens the website in your browser.
 
@@ -82,19 +82,27 @@ def main():
     os.chdir(BACKEND)
     sys.path.insert(0, str(BACKEND))
 
+    port = free_port(int(os.getenv("PORT", "8000")))
     stub = None
     if not os.getenv("FITPULSE_BASE_URL"):
-        stub_port = free_port(8001)
-        stub = subprocess.Popen([sys.executable, "-m", "uvicorn", "fitpulse_stub:app",
-                                 "--host", "127.0.0.1", "--port", str(stub_port), "--log-level", "warning"],
-                                cwd=str(BACKEND))
+        stub_port = free_port(port + 1)
+        partner_dir = ROOT / "fitpulse" / "backend"
+        env = dict(os.environ, FITMETRICS_BASE_URL=f"http://127.0.0.1:{port}/api/v1")
+        if (partner_dir / "app" / "main.py").exists():
+            # real FitPulse project (Majit, 23MIC0052) lives in this repo — run it as the partner service
+            cmd, cwd = [sys.executable, "-m", "uvicorn", "app.main:app"], partner_dir
+            partner = f"FitPulse (from ./fitpulse) on port {stub_port}"
+        else:
+            cmd, cwd = [sys.executable, "-m", "uvicorn", "fitpulse_stub:app"], BACKEND
+            partner = f"local FitPulse stand-in on port {stub_port}"
+        stub = subprocess.Popen(cmd + ["--host", "127.0.0.1", "--port", str(stub_port), "--log-level", "warning"],
+                                cwd=str(cwd), env=env)
         os.environ["FITPULSE_BASE_URL"] = f"http://127.0.0.1:{stub_port}/api/v1"
         wait_until_up(stub_port)
-        partner = f"local FitPulse stand-in on port {stub_port} (set FITPULSE_BASE_URL to use Majit's real API)"
+        partner += " — set FITPULSE_BASE_URL to use a deployed FitPulse"
     else:
         partner = os.environ["FITPULSE_BASE_URL"]
 
-    port = free_port(int(os.getenv("PORT", "8000")))
     url = f"http://localhost:{port}"
     print("\n" + "=" * 64)
     print(f"  FitMetrics website : {url}")

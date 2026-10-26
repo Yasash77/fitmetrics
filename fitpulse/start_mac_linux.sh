@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
-cd "$(dirname "$0")"
-python3 run.py
+# Start the FitMetrics website on http://localhost:8000
+cd "$(dirname "$0")" && python3 run.py

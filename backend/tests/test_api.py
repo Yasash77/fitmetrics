@@ -127,7 +127,7 @@ def test_vo2max():
     assert c["method"].startswith("Cooper")
 
 
-# ------------------------------------------------------------------ strength & body
+# ------------------------------------------------------------------ strength
 def test_strength_analysis():
     d = post("/metrics/strength-analysis", {"exercise": "bench_press", "weight": 80, "reps": 6, "bodyweight": 74}).json()["data"]
     assert d["oneRepMax"] == 94.5 and d["strengthLevel"] == "Intermediate" and d["nextLevelAt"] == 111.0
@@ -140,10 +140,6 @@ def test_session_volume():
     assert d["estimatedCalories"] == 133
 
 
-def test_body_fat():
-    d = post("/metrics/body-fat", {"gender": "male", "height": 178, "neck": 38, "waist": 84, "weight": 74}).json()["data"]
-    assert d["bodyFat"] == 15.7 and d["leanMass"] == 62.4
-    assert post("/metrics/body-fat", {"gender": "female", "height": 160, "neck": 32, "waist": 70}).status_code == 400
 
 
 # ------------------------------------------------------------------ partner integration

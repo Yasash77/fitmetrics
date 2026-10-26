@@ -1,10 +1,9 @@
-"""Health check, API-key issuing and 24-Formula PDF Report Sheet generation."""
+"""Health check, API-key issuing and PDF profile report."""
 from fastapi import APIRouter, Depends
 from fastapi.responses import Response
 
 from .. import config, report
 from .. import schemas as s
-from ..engine import body
 from ..security import issue_key, limit_for, require_api_key
 
 router = APIRouter()
@@ -18,7 +17,6 @@ def health():
             "service": config.APP_NAME,
             "status": "up",
             "version": config.VERSION,
-            "formulasEngine": 24,
         },
     }
 
@@ -43,21 +41,10 @@ def my_key(info: dict = Depends(require_api_key)):
     }
 
 
-@router.post(
-    "/reports/fitness-sheet",
-    tags=["Reports"],
-    summary="Download a 24-Formula Comprehensive Fitness Report Sheet (PDF)",
-    response_class=Response,
-    responses={200: {"content": {"application/pdf": {}}}},
-)
-def fitness_report_pdf(d: s.FullAnalysisIn, _: dict = Depends(require_api_key)):
-    payload = d.model_dump()
-    if payload.get("sets"):
-        payload["sets"] = [x.model_dump() if hasattr(x, "model_dump") else x for x in payload["sets"]]
-    full = body.comprehensive_24_analysis(payload)
-    pdf = report.fitness_sheet_pdf(full)
-    return Response(
-        pdf,
-        media_type="application/pdf",
-        headers={"Content-Disposition": 'attachment; filename="fitpulse-24-formula-report.pdf"'},
-    )
+@router.post("/reports/profile", tags=["Reports"], summary="Download a PDF profile & progress report",
+             response_class=Response, responses={200: {"content": {"application/pdf": {}}}})
+def profile_report_pdf(d: s.ProfileReportIn, _: dict = Depends(require_api_key)):
+    from .fitness import build_profile_report
+    pdf = report.profile_pdf(build_profile_report(d))
+    return Response(pdf, media_type="application/pdf",
+                    headers={"Content-Disposition": 'attachment; filename="fitpulse-profile-report.pdf"'})

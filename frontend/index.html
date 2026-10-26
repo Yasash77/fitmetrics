@@ -178,8 +178,6 @@ nav{gap:22px}
       <div class="f3"><div><label>Activity</label><select id="cAct"><option value="running">Running</option><option value="cycling">Cycling</option><option value="swimming">Swimming</option><option value="hiit">HIIT</option><option value="football">Football</option><option value="badminton">Badminton</option><option value="weight_training">Weight training</option></select></div><div><label>Duration (min)</label><input id="cD" value="45"></div><div><label>Climate</label><select id="cCl"><option value="normal">Normal</option><option value="hot">Hot</option></select></div></div>
       <div class="f3"><div><label>Avg HR (bpm)</label><input id="cHr" value="172"></div><div><label>Resting HR</label><input id="cRhr" value="62"></div><div><label>Age</label><input id="cA" value="21"></div></div>
       <div class="f3"><div><label>Body weight (kg)</label><input id="cW" value="74"></div><div><label>Gender</label><select id="cG"><option value="male">Male</option><option value="female">Female</option></select></div><div><label>Athlete name</label><input id="cN" value="Yasash S"></div></div>
-      <h3 style="margin-top:14px">Body composition <span class="chip" style="margin-left:6px">optional</span></h3>
-      <div class="f3"><div><label>Height (cm)</label><input id="cH" value="178"></div><div><label>Neck (cm)</label><input id="cNk" value="38"></div><div><label>Waist (cm)</label><input id="cWa" value="84"></div></div>
       <div style="display:flex;gap:10px;margin-top:6px"><button class="btn" style="flex:1" onclick="calc()">Analyse workout</button><button class="btn o" style="flex:1" onclick="pdf()">⬇ Download PDF report</button></div>
     </div>
     <div class="card"><h3>Results <span class="chip gr" style="float:right">Live from API</span></h3><div id="cOut"></div></div>
@@ -308,11 +306,9 @@ nav{gap:22px}
 </section>
 </main>
 <script>
-// API location: ?api=… override → Vercel build talks to Render → otherwise same server that served this page
-const REMOTE_API = 'https://fitmetrics-api.onrender.com/api/v1';
+// API location: ?api=… override, otherwise the same server that served this page
 const API = new URLSearchParams(location.search).get('api')
-  || (location.hostname.endsWith('vercel.app') ? REMOTE_API
-  : location.protocol.startsWith('http') ? location.origin + '/api/v1'
+  || (location.protocol.startsWith('http') ? location.origin + '/api/v1'   // same server serves site + API (local, Vercel, Render)
   : 'http://localhost:8000/api/v1');
 const DEMO = 'fm_demo_public_key';
 const $ = id => document.getElementById(id);
@@ -348,7 +344,6 @@ const EPS = {
  '/metrics/vo2max': {g:'Cardio',d:'VO2max estimate, rating and fitness age', b:{age:21,gender:'male',restingHr:62}},
  '/metrics/strength-analysis': {g:'Strength',d:'1RM, training loads, rep targets, strength level', b:{exercise:'bench_press',weight:80,reps:6,bodyweight:74}},
  '/metrics/session-volume': {g:'Strength',d:'Gym session volume, intensity and muscle groups', b:{bodyweight:74,sets:[{exercise:'bench_press',weight:80,reps:6},{exercise:'squat',weight:100,reps:5}]}},
- '/metrics/body-fat': {g:'Body (secondary)',d:'Body-fat %, fat & lean mass (US Navy)', b:{gender:'male',height:178,neck:38,waist:84,weight:74}},
  '/metrics/energy-balance': {g:'Partner integration',d:'Net calories — maintenance from FitPulse API', b:{age:21,gender:'male',height:178,weight:74,activityLevel:'moderate',caloriesEaten:2300,workouts:[{activity:'running',duration:45,weight:74}]}},
  '/reports/workout': {g:'Reports & keys',d:'Download a PDF workout report (application/pdf)', b:{...RUN,athlete:'Yasash S',strength:{exercise:'bench_press',weight:80,reps:6}}},
  '/keys': {g:'Reports & keys',d:'Issue a free API key (public — no key needed)', b:{name:'Yasash S',email:'yasash@vitstudent.ac.in'}},
@@ -391,14 +386,13 @@ async function dash(){
 // ---------- workout lab
 function wBody(){return {activity:$('cAct').value,duration:v('cD'),weight:v('cW'),age:v('cA'),restingHr:v('cRhr'),avgHr:v('cHr'),gender:$('cG').value,climate:$('cCl').value}}
 async function calc(){
-  const [w,bf]=await Promise.all([post('/metrics/workout-analysis',wBody()),post('/metrics/body-fat',{gender:'male',height:v('cH'),neck:v('cNk'),waist:v('cWa'),weight:v('cW')})]);
+  const w=await post('/metrics/workout-analysis',wBody());
   if(!w.success){$('cOut').innerHTML=`<div class="flag">${errText(w)}</div>`;return}
   const a=w.data;
   $('cOut').innerHTML=`<div class="rec" style="margin:0 0 6px">${a.summary}</div>`+row('Calories burned',a.caloriesBurned+' kcal',`<span class="chip">${a.caloriesPerMin}/min</span>`)+
    `<div class="meter"><i style="left:${a.percentHrr}%"></i></div><div class="res" style="padding-top:4px"><span>Intensity</span><b>${a.percentHrr}% HRR <span class="chip or">${a.zone}</span></b></div>`+
    row('Training load',a.trainingLoad+' TRIMP',`<span class="chip">${a.loadRating}</span>`)+row('Recovery time','~'+a.recoveryHours+' h')+
-   row('Sweat loss / drink',a.hydration.sweatLossLitres+' L / '+a.hydration.drinkLitres+' L',`<span class="chip">${a.hydration.electrolytes?'+ electrolytes':'water'}</span>`)+
-   (bf.success?row('Body fat (secondary)',bf.data.bodyFat+' %',`<span class="chip gr">${bf.data.category}</span>`):'');
+   row('Sweat loss / drink',a.hydration.sweatLossLitres+' L / '+a.hydration.drinkLitres+' L',`<span class="chip">${a.hydration.electrolytes?'+ electrolytes':'water'}</span>`);
 }
 async function pdf(){let r;try{r=await fetch(API+'/reports/workout',{method:'POST',headers:hdr(),body:JSON.stringify({...wBody(),athlete:$('cN').value})})}catch(e){offline(true);return}
   if(!r.ok){const j=await r.json().catch(()=>({}));$('cOut').insertAdjacentHTML('afterbegin',`<div class="flag">PDF failed: ${j.error||r.status}</div>`);return}

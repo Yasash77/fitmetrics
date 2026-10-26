@@ -1,20 +1,34 @@
-# FitPulse — 24-Formula Fitness Intelligence & Personal Metrics API
-Majit · 23MIC0052 · Partner Project: FitMetrics (Yasash S · 23MIC0060)
+# FitPulse — Personal Fitness Performance & Progress Management System
+Majit · 23MIC0052 · Partner project: FitMetrics (Yasash S · 23MIC0060)
 
-## Start the website & API (one step)
-- **Windows:** double-click `start_windows.bat` or run:
-  ```bash
-  cd fitpulse
-  python run.py
-  ```
-- **macOS / Linux:** `./start_mac_linux.sh` or `python3 run.py`
+FitPulse answers **"what does this person need, and how are they progressing?"**
+FitMetrics answers **"what did each workout actually do?"** — FitPulse never computes workout
+metrics itself; it asks FitMetrics.
 
-Then open **http://localhost:8000** (opens automatically).
-Interactive Swagger API docs: **http://localhost:8000/docs**
+## Features
+| Area | Endpoints |
+|---|---|
+| Energy needs | `POST /fitness/calories` — BMR (Mifflin-St Jeor, Harris-Benedict, Katch-McArdle), TDEE, goal calories, macros *(also used by FitMetrics)* |
+| Goal planning | `POST /fitness/goal-plan` — target weight + weeks → daily calories, macros, safety rating, target date |
+| Body composition | `POST /fitness/bmi`, `/fitness/body-fat` (US Navy), `/fitness/ideal-weight` (4 formulas) |
+| Progress tracking | `POST /progress/measurements`, `POST /progress/goal`, `GET /progress/summary` (trend, weekly rate, on-track check) |
+| Workout log **(uses FitMetrics)** | `POST /progress/workouts` → analysed by `FitMetrics /metrics/workout-analysis` before saving; `GET /progress/workouts` weekly totals |
+| Injury risk **(uses FitMetrics)** | `GET /progress/training-status` → 28-day loads sent to `FitMetrics /metrics/training-balance` |
+| Partner sync **(uses FitMetrics)** | `POST /fitness/partner-sync` — today's energy target + calories burned from FitMetrics |
+| Reports & keys | `POST /reports/profile` (PDF), `POST /keys`, `GET /keys/me`, `GET /health` |
 
-## 24 Scientific Formulas & Analytical Methods across 5 Domains
-1. **Metabolic & Energy Expenditure (1–4):** Mifflin-St Jeor BMR, Harris-Benedict BMR, Katch-McArdle BMR + TDEE + Goal Macros, Activity-Specific MET Calorie Burn.
-2. **Cardiovascular & Endurance (5–10):** Tanaka/Fox/Gellish Max HR, 5-Zone Karvonen Heart Rate Reserve, Cooper 12-min VO₂max, Uth HR-Ratio VO₂max, Pace/Speed Analysis, Riegel Race Predictions.
-3. **Strength & Power (11–15):** Epley 1RM, Brzycki & Lombardi 1RM, Relative Strength Index, Bodyweight Strength Classification, Session Volume & Muscle-Group Distribution.
-4. **Training Load & Recovery (16–20):** Banister & Edwards TRIMP, 28-Day ACWR Injury Risk, Foster Monotony & Strain, Daily Readiness Score (0–100), ACSM Sweat-Loss & Hydration Plan.
-5. **Body Composition & Master Synthesis (21–24):** BMI + Prime + Ponderal Index, U.S. Navy Body Fat % + Lean/Fat Mass, Ideal Weight (Hamwi, Devine, Robinson, Miller), Physiological Fitness Age + Downloadable PDF Report Sheet.
+## Run (one step)
+- **Windows:** double-click `start_windows.bat` (or `python run.py` in this folder)
+- **macOS / Linux:** `./start_mac_linux.sh`
+
+Opens **http://localhost:8000** · Swagger: **/docs**. `run.py` also starts the real FitMetrics
+project from the parent folder as the partner service (or a small stand-in if it isn't there).
+
+## Tests
+    cd backend && pytest -q        # 13 tests
+
+## Deploy on Vercel (free, no card)
+vercel.com/new → import the GitHub repo → **Root Directory: `fitpulse`** → Deploy.
+Then set environment variable `FITMETRICS_BASE_URL = https://<your-fitmetrics>.vercel.app/api/v1`
+and redeploy. (On Vercel the progress database lives in /tmp and can reset when the function
+sleeps; the `demo` profile refills itself automatically.)

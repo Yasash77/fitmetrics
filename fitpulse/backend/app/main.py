@@ -1,5 +1,5 @@
 """
-FitPulse — 24-Formula Fitness Intelligence & Personal Metrics API
+FitPulse — Personal Fitness Performance & Progress Management System
 Author : Majit (23MIC0052) · Partner Project: FitMetrics (Yasash S, 23MIC0060)
 
 Run locally:  python run.py  → website http://localhost:8000 · API docs http://localhost:8000/docs
@@ -12,13 +12,14 @@ from fastapi.staticfiles import StaticFiles
 
 from . import config
 from .engine.metabolic import MetricError
-from .routers import fitness, system
+from .routers import fitness, progress, system
 
 app = FastAPI(
     title=config.APP_NAME,
     version=config.VERSION,
     description=(
-        "24-Formula Fitness Intelligence, Metabolic, Cardio, Strength, Load & Body Composition Analytics API. "
+        "Energy needs, body composition, goal planning and progress tracking. Workout analytics come from the partner "
+        "FitMetrics API (23MIC0060). "
         "Send your key in the `X-API-Key` header. Get a free key from `POST /api/v1/keys`."
     ),
     contact={"name": "Majit · 23MIC0052"},
@@ -33,6 +34,7 @@ app.add_middleware(
 
 app.include_router(system.router, prefix=config.API_PREFIX)
 app.include_router(fitness.router, prefix=config.API_PREFIX)
+app.include_router(progress.router, prefix=config.API_PREFIX)
 
 
 @app.exception_handler(MetricError)
