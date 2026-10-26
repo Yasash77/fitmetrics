@@ -4,118 +4,606 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>FitMetrics — Workout Performance & Training Analytics API</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#f5f6fb;--card:#fff;--ink:#141632;--mute:#6b6f8e;--line:#e4e6f0;--pri:#3d3bbf;--pri2:#5b58e6;--acc:#ff7a2f;--good:#14a37f;--code:#12132b}
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:14px}
-nav{background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:28px;padding:14px 40px;position:sticky;top:0;z-index:5}
-.logo{display:flex;align-items:center;gap:9px;font-weight:800;font-size:17px}
-.logo i{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--pri),var(--acc));display:grid;place-items:center;color:#fff;font-style:normal;font-size:15px}
-nav a{color:var(--mute);text-decoration:none;font-weight:500;cursor:pointer;padding:6px 2px;border-bottom:2px solid transparent}
-nav a.on{color:var(--pri);border-color:var(--pri)}
-nav .sp{flex:1}
-.pill{font-size:12px;padding:5px 11px;border-radius:99px;background:#e8f7f2;color:var(--good);font-weight:600}
-.btn{background:var(--pri);color:#fff;border:0;border-radius:9px;padding:10px 18px;font-weight:600;cursor:pointer;font-family:inherit}
-.btn.o{background:#fff;color:var(--pri);border:1px solid var(--line)}
-main{max-width:1180px;margin:0 auto;padding:32px 40px 60px}
-section{display:none}section.on{display:block}
-.hero{display:grid;grid-template-columns:1.1fr 1fr;gap:32px;align-items:center;background:linear-gradient(120deg,#1b1a5c,#3d3bbf 60%,#6a4fd8);border-radius:20px;padding:40px;color:#fff;margin-bottom:24px}
-.hero h1{font-size:36px;line-height:1.1;margin:12px 0}
-.hero p{opacity:.85;line-height:1.6;max-width:460px}
-.tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:rgba(255,255,255,.14);padding:5px 10px;border-radius:6px}
-.hero .btns{display:flex;gap:10px;margin-top:20px}
-.hero .btn{background:var(--acc)}.hero .btn.o{background:transparent;color:#fff;border-color:rgba(255,255,255,.35)}
-pre,.mono{font-family:'JetBrains Mono',monospace;font-size:12.5px}
-.codebox{background:var(--code);border-radius:14px;padding:18px;color:#cfd2ff;box-shadow:0 20px 40px rgba(0,0,0,.25)}
-.codebox .h{display:flex;gap:6px;margin-bottom:12px;align-items:center;color:#8d90c0;font-size:12px}
-.codebox .h b{width:9px;height:9px;border-radius:50%;background:#ff5f57}.codebox .h b:nth-child(2){background:#febc2e}.codebox .h b:nth-child(3){background:#28c840}
-.k{color:#ff9f6b}.s{color:#9be29b}.n{color:#7cc7ff}
-.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px}
-.stat small{color:var(--mute);font-weight:500;display:flex;justify-content:space-between}
-.stat .v{font-size:28px;font-weight:800;margin:8px 0 4px}
-.stat .v span{font-size:14px;color:var(--mute);font-weight:500}
-.chip{font-size:11px;font-weight:600;padding:3px 8px;border-radius:6px;background:#eeedfd;color:var(--pri)}
-.chip.or{background:#fff1e8;color:#d95f12}.chip.gr{background:#e6f6f1;color:var(--good)}
-h2{font-size:24px;margin-bottom:6px}h3{font-size:15px;margin-bottom:14px}
-.sub{color:var(--mute);margin-bottom:22px}
-.eyebrow{font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--acc);text-transform:uppercase;margin-bottom:6px}
-.zone{display:grid;grid-template-columns:150px 1fr 90px;align-items:center;gap:12px;margin:9px 0;font-size:13px}
-.bar{height:10px;border-radius:6px;background:#eef0f7;overflow:hidden}.bar i{display:block;height:100%;border-radius:6px}
-label{display:block;font-size:12px;font-weight:600;color:var(--mute);margin-bottom:5px}
-input,select,textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:9px;font-family:inherit;font-size:14px;background:#fafbff}
-.f2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
-.f3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px}
-.seg{display:flex;gap:6px;margin-bottom:14px}.seg button{flex:1;padding:9px;border:1px solid var(--line);border-radius:9px;background:#fff;font-family:inherit;font-weight:600;color:var(--mute);cursor:pointer}
-.seg button.on{background:var(--pri);color:#fff;border-color:var(--pri)}
-.res{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px dashed var(--line)}
-.res b{font-size:18px}
-table{width:100%;border-collapse:collapse;font-size:13px}
-th{text-align:left;color:var(--mute);font-weight:600;padding:9px 10px;border-bottom:1px solid var(--line);font-size:12px}
-td{padding:10px;border-bottom:1px solid var(--line)}
-.m{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;padding:3px 7px;border-radius:5px;background:#fff1e8;color:#d95f12}
-.m.get{background:#e6f6f1;color:var(--good)}
-.pg{display:grid;grid-template-columns:1fr 1fr;gap:0;background:var(--code);border-radius:16px;overflow:hidden}
-.pg>div{padding:20px}.pg>div+div{border-left:1px solid #26284d}
-.pg select,.pg textarea{background:#1b1c3d;border-color:#2c2e5a;color:#dfe1ff;font-family:'JetBrains Mono',monospace;font-size:12.5px}
-.pg label{color:#8d90c0}
-.pg pre{color:#cfd2ff;white-space:pre-wrap;min-height:330px}
-.status{font-size:12px;color:#7ee2b8;font-family:'JetBrains Mono',monospace}
-.ep{border:1px solid var(--line);border-radius:12px;margin-bottom:12px;background:#fff}
-.ep .t{display:flex;gap:12px;align-items:center;padding:14px 18px}
-.ep .t code{font-family:'JetBrains Mono',monospace;font-weight:600}
-.ep .t>span:last-child{color:var(--mute);margin-left:auto}
-.ep .b{border-top:1px solid var(--line);padding:14px 18px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.ep .b>div{min-width:0}.ep .b pre{white-space:pre-wrap;word-break:break-word;background:#f4f5fb;padding:12px;border-radius:9px;font-size:12px}
-.flow{display:flex;align-items:center;gap:14px;justify-content:center;margin:10px 0 24px}
-.node{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 20px;text-align:center;min-width:200px}
-.node.me{border:2px solid var(--pri);background:#f3f2ff}
-.arrow{font-size:12px;color:var(--mute);text-align:center}.arrow b{display:block;font-size:22px;color:var(--acc)}
+:root {
+  --background: #f5f5f7;
+  --surface: #ffffff;
+  --surface-secondary: #f5fcf8;
+  --text-primary: #1d1d1f;
+  --text-secondary: #626262;
+  --border-strong: #1d1d1f;
+  --accent: #68cea0;
+  --accent-secondary: #ff8a65;
+  --accent-tertiary: #b8f28b;
+  --radius-card: 16px;
+  --radius-control: 10px;
+  --border-width: 2px;
+  --shadow-hard: 4px 4px 0 #1d1d1f;
+  --shadow-hard-hover: 6px 6px 0 #1d1d1f;
+  --shadow-hard-sm: 2px 2px 0 #1d1d1f;
+  --shadow-none: 0 0 0 transparent;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-press: 100ms;
+  --duration-base: 250ms;
 
-.grid5{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
-.summary{background:#fff;border:1px solid var(--line);border-left:5px solid var(--acc);border-radius:14px;padding:18px 22px;margin-bottom:24px;display:flex;gap:18px;align-items:center}
-.summary .ic{width:44px;height:44px;border-radius:12px;background:#fff1e8;display:grid;place-items:center;font-size:22px;flex:none}
-.summary p{font-size:15px;line-height:1.55}
-.zone.hl{background:#fff7f1;border-radius:8px;padding:4px 6px;margin-left:-6px;margin-right:-6px;font-weight:700}
-.zone.hl b{color:#d95f12}
-.meter{height:12px;border-radius:8px;background:linear-gradient(90deg,#a5b4fc,#6ee7b7,#fcd34d,#fb923c,#f43f5e);position:relative;margin:18px 0 8px}
-.meter i{position:absolute;top:-6px;width:4px;height:24px;background:var(--ink);border-radius:3px}
-.lvl{display:flex;gap:4px;margin-top:10px}.lvl span{flex:1;text-align:center;font-size:11px;padding:6px 0;border-radius:6px;background:#eef0f7;color:var(--mute);font-weight:600}
-.lvl span.on{background:var(--pri);color:#fff}
-.sec{font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--mute);text-transform:uppercase;margin:16px 0 4px}
-
-nav{gap:22px}
-.grid5{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
-.summary{background:#fff;border:1px solid var(--line);border-left:5px solid var(--acc);border-radius:14px;padding:18px 22px;margin-bottom:24px;display:flex;gap:18px;align-items:center}
-.summary .ic{width:44px;height:44px;border-radius:12px;background:#fff1e8;display:grid;place-items:center;font-size:22px;flex:none}
-.summary p{font-size:15px;line-height:1.55}
-.zone.hl{background:#fff7f1;border-radius:8px;padding:4px 6px;margin-left:-6px;margin-right:-6px;font-weight:700}
-.zone.hl b{color:#d95f12}
-.meter{height:12px;border-radius:8px;background:linear-gradient(90deg,#a5b4fc,#6ee7b7,#fcd34d,#fb923c,#f43f5e);position:relative;margin:18px 0 8px}
-.meter i{position:absolute;top:-6px;width:4px;height:24px;background:var(--ink);border-radius:3px}
-.meter.acwr{background:linear-gradient(90deg,#a5b4fc 0 32%,#6ee7b7 32% 52%,#fcd34d 52% 60%,#f43f5e 60%)}
-.scale{display:flex;justify-content:space-between;font-size:11px;color:var(--mute)}
-.lvl{display:flex;gap:4px;margin-top:10px}.lvl span{flex:1;text-align:center;font-size:11px;padding:6px 0;border-radius:6px;background:#eef0f7;color:var(--mute);font-weight:600}
-.lvl span.on{background:var(--pri);color:#fff}
-.sec{font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--mute);text-transform:uppercase;margin:16px 0 4px}
-.ring{width:150px;height:150px;border-radius:50%;display:grid;place-items:center;margin:6px auto 12px}
-.ring div{width:118px;height:118px;border-radius:50%;background:#fff;display:grid;place-items:center;text-align:center}
-.ring b{font-size:38px;line-height:1}.ring small{color:var(--mute);font-weight:600}
-.rec{background:#f3f2ff;border-radius:12px;padding:14px 16px;margin-top:12px}
-.rec b{color:var(--pri)}
-.flag{font-size:12.5px;color:#b4471a;background:#fff4ec;border-radius:8px;padding:8px 10px;margin-top:8px}
-.hbar{display:grid;grid-template-columns:90px 1fr 70px;gap:10px;align-items:center;margin:8px 0;font-size:13px}
-.sets td input{padding:6px 8px;font-size:13px}
-.sets td{padding:6px 6px}
-.x{background:none;border:0;color:var(--mute);cursor:pointer;font-size:16px}
-.modal{position:fixed;inset:0;background:rgba(20,22,50,.45);display:none;place-items:center;z-index:20}
-.modal.on{display:grid}
-.modal .card{width:440px;box-shadow:0 30px 60px rgba(0,0,0,.25)}
-.keybox{font-family:'JetBrains Mono',monospace;background:#12132b;color:#7ee2b8;padding:12px;border-radius:9px;margin:10px 0;word-break:break-all;font-size:13px}
-.grp{font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--acc);text-transform:uppercase;margin:22px 0 8px}
+  /* Mapped FitMetrics Tokens */
+  --bg: var(--background);
+  --card: var(--surface);
+  --ink: var(--text-primary);
+  --mute: var(--text-secondary);
+  --line: #d2d2d7;
+  --pri: #3d3bbf;
+  --pri2: #5b58e6;
+  --acc: #ff8a65;
+  --good: #14a37f;
+  --code: #161622;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 14.5px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+nav {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: var(--border-width) solid var(--border-strong);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 32px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  flex-wrap: wrap;
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+  font-size: 18px;
+  letter-spacing: -0.025em;
+  margin-right: 12px;
+}
+.logo i {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: var(--accent);
+  border: var(--border-width) solid var(--border-strong);
+  box-shadow: var(--shadow-hard-sm);
+  display: grid;
+  place-items: center;
+  color: var(--ink);
+  font-style: normal;
+  font-size: 16px;
+}
+nav a {
+  color: var(--mute);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 13.5px;
+  cursor: pointer;
+  padding: 7px 12px;
+  border-radius: var(--radius-control);
+  border: var(--border-width) solid transparent;
+  transition: transform var(--duration-press) var(--ease-out),
+              background-color var(--duration-press) var(--ease-out),
+              box-shadow var(--duration-press) var(--ease-out);
+}
+nav a:hover {
+  color: var(--ink);
+  background: var(--surface-secondary);
+}
+nav a.on {
+  color: var(--ink);
+  background: var(--accent);
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-hard-sm);
+  font-weight: 700;
+}
+nav .sp { flex: 1; }
+.pill {
+  font-size: 12px;
+  padding: 5px 12px;
+  border-radius: 8px;
+  background: var(--accent-tertiary);
+  color: var(--ink);
+  border: var(--border-width) solid var(--border-strong);
+  font-weight: 700;
+}
+.btn {
+  background: var(--accent);
+  color: var(--ink);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-control);
+  padding: 10px 18px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  box-shadow: var(--shadow-hard);
+  transition: transform var(--duration-press) var(--ease-out),
+              box-shadow var(--duration-press) var(--ease-out),
+              background-color var(--duration-press) var(--ease-out);
+}
+.btn:hover {
+  background: #78d6ad;
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-hard-hover);
+}
+.btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 var(--border-strong);
+}
+.btn.o {
+  background: var(--surface);
+  color: var(--ink);
+  border: var(--border-width) solid var(--border-strong);
+}
+.btn.o:hover {
+  background: var(--surface-secondary);
+}
+main {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 36px 32px 72px;
+}
+section { display: none; }
+section.on { display: block; }
+.hero {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 32px;
+  align-items: center;
+  background: var(--surface-secondary);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-hard-hover);
+  padding: 40px;
+  color: var(--ink);
+  margin-bottom: 28px;
+}
+.hero h1 {
+  font-size: 38px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+  margin: 14px 0;
+}
+.hero p {
+  color: var(--mute);
+  line-height: 1.6;
+  max-width: 470px;
+  font-size: 15px;
+}
+.tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: var(--accent);
+  color: var(--ink);
+  border: var(--border-width) solid var(--border-strong);
+  box-shadow: var(--shadow-hard-sm);
+  padding: 5px 10px;
+  border-radius: 6px;
+}
+.hero .btns { display: flex; gap: 12px; margin-top: 22px; }
+.hero .btn { background: var(--accent); color: var(--ink); }
+.hero .btn.o { background: var(--surface); color: var(--ink); border-color: var(--border-strong); }
+pre, .mono { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; }
+.codebox {
+  background: var(--code);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: 14px;
+  padding: 18px;
+  color: #cfd2ff;
+  box-shadow: var(--shadow-hard);
+}
+.codebox .h {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+  align-items: center;
+  color: #989bc8;
+  font-size: 12px;
+}
+.codebox .h b { width: 10px; height: 10px; border-radius: 50%; background: #ff5f57; border: 1px solid rgba(0,0,0,0.3); }
+.codebox .h b:nth-child(2) { background: #febc2e; }
+.codebox .h b:nth-child(3) { background: #28c840; }
+.k { color: #ff9f6b; }
+.s { color: #b8f28b; }
+.n { color: #7cc7ff; }
+.grid4, .grid5 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  margin-bottom: 24px;
+}
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.card {
+  background: var(--card);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-hard);
+  padding: 24px;
+}
+.stat small {
+  color: var(--mute);
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.stat .v {
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin: 10px 0 4px;
+}
+.stat .v span {
+  font-size: 14px;
+  color: var(--mute);
+  font-weight: 600;
+}
+.chip {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 6px;
+  background: var(--surface-secondary);
+  color: var(--ink);
+  border: 1.5px solid var(--border-strong);
+}
+.chip.or { background: var(--accent-secondary); color: var(--ink); }
+.chip.gr { background: var(--accent-tertiary); color: var(--ink); }
+h2 {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  margin-bottom: 6px;
+}
+h3 {
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  margin-bottom: 14px;
+}
+.sub { color: var(--mute); margin-bottom: 24px; font-size: 15px; }
+.eyebrow {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--ink);
+  background: var(--accent);
+  border: 1.5px solid var(--border-strong);
+  padding: 3px 8px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.zone {
+  display: grid;
+  grid-template-columns: 150px 1fr 90px;
+  align-items: center;
+  gap: 12px;
+  margin: 10px 0;
+  font-size: 13px;
+}
+.zone.hl {
+  background: var(--accent);
+  border: 1.5px solid var(--border-strong);
+  border-radius: 8px;
+  padding: 5px 8px;
+  margin-left: -8px;
+  margin-right: -8px;
+  font-weight: 700;
+}
+.zone.hl b { color: var(--ink); }
+.bar {
+  height: 12px;
+  border-radius: 6px;
+  background: #ebebf0;
+  border: 1.5px solid var(--border-strong);
+  overflow: hidden;
+}
+.bar i { display: block; height: 100%; }
+label {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+input, select, textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-control);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  background: var(--surface);
+  color: var(--ink);
+  transition: background-color var(--duration-press) var(--ease-out),
+              box-shadow var(--duration-press) var(--ease-out);
+}
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  background: var(--surface-secondary);
+  box-shadow: var(--shadow-hard-sm);
+}
+.f2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+.f3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+.seg { display: flex; gap: 6px; margin-bottom: 14px; }
+.seg button {
+  flex: 1;
+  padding: 9px;
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-control);
+  background: var(--surface);
+  font-family: inherit;
+  font-weight: 700;
+  color: var(--ink);
+  cursor: pointer;
+}
+.seg button.on { background: var(--accent); color: var(--ink); box-shadow: var(--shadow-hard-sm); }
+.res {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1.5px dashed var(--line);
+}
+.res b { font-size: 17px; font-weight: 800; }
+table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+th {
+  text-align: left;
+  color: var(--mute);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 10px;
+  border-bottom: var(--border-width) solid var(--border-strong);
+  font-size: 11.5px;
+}
+td { padding: 10px; border-bottom: 1px solid var(--line); }
+.m {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+  border: 1.5px solid var(--border-strong);
+  background: var(--accent);
+  color: var(--ink);
+}
+.m.get { background: var(--accent-tertiary); color: var(--ink); }
+.pg {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  background: var(--code);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-hard);
+  overflow: hidden;
+}
+.pg > div { padding: 24px; }
+.pg > div + div { border-left: var(--border-width) solid #2e3052; }
+.pg select, .pg textarea, .pg input {
+  background: #22243e;
+  border-color: #454878;
+  color: #f5f5f7;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12.5px;
+}
+.pg label { color: #b0b4de; }
+.pg pre { color: #cfd2ff; white-space: pre-wrap; min-height: 330px; }
+.status { font-size: 12px; color: var(--accent-tertiary); font-family: 'JetBrains Mono', monospace; }
+.ep {
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-hard-sm);
+  margin-bottom: 12px;
+  background: var(--surface);
+}
+.ep .t { display: flex; gap: 12px; align-items: center; padding: 14px 18px; }
+.ep .t code { font-family: 'JetBrains Mono', monospace; font-weight: 700; }
+.ep .t > span:last-child { color: var(--mute); margin-left: auto; }
+.ep .b {
+  border-top: var(--border-width) solid var(--border-strong);
+  padding: 16px 18px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  background: var(--surface-secondary);
+}
+.ep .b > div { min-width: 0; }
+.ep .b pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: var(--surface);
+  border: 1.5px solid var(--border-strong);
+  padding: 12px;
+  border-radius: 9px;
+  font-size: 12px;
+}
+.flow { display: flex; align-items: center; gap: 16px; justify-content: center; margin: 14px 0 28px; flex-wrap: wrap; }
+.node {
+  background: var(--surface);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-hard-sm);
+  padding: 18px 22px;
+  text-align: center;
+  min-width: 210px;
+}
+.node.me {
+  background: var(--accent);
+  box-shadow: var(--shadow-hard);
+}
+.arrow { font-size: 12px; font-weight: 700; color: var(--mute); text-align: center; }
+.arrow b { display: block; font-size: 22px; color: var(--ink); }
+.summary {
+  background: var(--surface);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-hard);
+  padding: 18px 22px;
+  margin-bottom: 24px;
+  display: flex;
+  gap: 18px;
+  align-items: center;
+}
+.summary .ic {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: var(--accent);
+  border: var(--border-width) solid var(--border-strong);
+  box-shadow: var(--shadow-hard-sm);
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+  flex: none;
+}
+.summary p { font-size: 15px; line-height: 1.55; font-weight: 500; }
+.meter {
+  height: 14px;
+  border-radius: 8px;
+  border: 1.5px solid var(--border-strong);
+  background: linear-gradient(90deg, #a5b4fc, #6ee7b7, #fcd34d, #fb923c, #f43f5e);
+  position: relative;
+  margin: 18px 0 8px;
+}
+.meter i {
+  position: absolute;
+  top: -6px;
+  width: 6px;
+  height: 24px;
+  background: var(--ink);
+  border: 1.5px solid #fff;
+  border-radius: 3px;
+}
+.meter.acwr { background: linear-gradient(90deg, #a5b4fc 0 32%, #6ee7b7 32% 52%, #fcd34d 52% 60%, #f43f5e 60%); }
+.scale { display: flex; justify-content: space-between; font-size: 11.5px; font-weight: 600; color: var(--mute); }
+.lvl { display: flex; gap: 6px; margin-top: 12px; }
+.lvl span {
+  flex: 1;
+  text-align: center;
+  font-size: 11.5px;
+  padding: 7px 0;
+  border-radius: 8px;
+  border: 1.5px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--mute);
+  font-weight: 700;
+}
+.lvl span.on {
+  background: var(--accent);
+  color: var(--ink);
+  box-shadow: var(--shadow-hard-sm);
+}
+.sec {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--mute);
+  text-transform: uppercase;
+  margin: 16px 0 6px;
+}
+.ring {
+  width: 154px;
+  height: 154px;
+  border-radius: 50%;
+  border: var(--border-width) solid var(--border-strong);
+  box-shadow: var(--shadow-hard-sm);
+  display: grid;
+  place-items: center;
+  margin: 12px auto;
+}
+.ring div {
+  width: 118px;
+  height: 118px;
+  border-radius: 50%;
+  border: var(--border-width) solid var(--border-strong);
+  background: var(--surface);
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+.ring b { font-size: 38px; font-weight: 800; line-height: 1; }
+.ring small { color: var(--mute); font-weight: 700; }
+.rec {
+  background: var(--surface-secondary);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-top: 14px;
+}
+.rec b { color: var(--ink); }
+.flag {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  background: var(--accent-secondary);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-top: 8px;
+}
+.hbar { display: grid; grid-template-columns: 90px 1fr 70px; gap: 10px; align-items: center; margin: 8px 0; font-size: 13px; font-weight: 600; }
+.sets td input { padding: 6px 8px; font-size: 13px; }
+.sets td { padding: 6px; }
+.x { background: none; border: 0; color: var(--ink); cursor: pointer; font-size: 16px; font-weight: 800; }
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(29, 29, 31, 0.55);
+  backdrop-filter: blur(6px);
+  display: none;
+  place-items: center;
+  z-index: 20;
+}
+.modal.on { display: grid; }
+.modal .card { width: 440px; max-width: calc(100vw - 32px); box-shadow: var(--shadow-hard-hover); }
+.keybox {
+  font-family: 'JetBrains Mono', monospace;
+  background: var(--code);
+  color: var(--accent-tertiary);
+  border: var(--border-width) solid var(--border-strong);
+  padding: 12px;
+  border-radius: 9px;
+  margin: 10px 0;
+  word-break: break-all;
+  font-size: 13px;
+}
+.grp {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--ink);
+  text-transform: uppercase;
+  margin: 24px 0 10px;
+}
+@media (max-width: 900px) {
+  nav { padding: 12px 16px; }
+  main { padding: 24px 16px 48px; }
+  .hero, .grid2, .grid3, .grid4, .grid5, .pg, .ep .b { grid-template-columns: 1fr !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
 </style>
 </head>
 <body>
@@ -131,15 +619,15 @@ nav{gap:22px}
   <div id="keyDone" style="display:none"><label>Your API key</label><div class="keybox" id="kOut"></div><p style="font-size:13px;color:var(--mute)">Saved in this browser — the website now uses your key.</p><button class="btn" style="margin-top:12px" onclick="closeKey()">Done</button></div>
 </div></div>
 <main>
-<div id="offline" style="display:none;background:#fff4ec;border:1px solid #ffb488;border-radius:14px;padding:16px 20px;margin-bottom:22px;font-size:14px;line-height:1.6">
-  <b style="color:#d95f12">The FitMetrics backend isn't reachable.</b> The website needs the Python API running.<br>
+<div id="offline" style="display:none;background:var(--accent);border:2px solid var(--border-strong);box-shadow:var(--shadow-hard-sm);border-radius:14px;padding:16px 20px;margin-bottom:22px;font-size:14px;line-height:1.6">
+  <b>The FitMetrics backend isn't reachable.</b> The website needs the Python API running.<br>
   Start it with <b>start_windows.bat</b> (double-click) or <code class="mono">python run.py</code> in the project folder, then open <code class="mono">http://localhost:8000</code>.
   <span style="color:var(--mute)">Trying: <code class="mono" id="apiUrl"></code></span>
 </div>
 <!-- DASHBOARD -->
 <section id="dash" class="on">
   <div class="hero">
-    <div><span class="tag">Workout Performance & Training Analytics API</span>
+    <div><span class="tag">Workout Performance &amp; Training Analytics API</span>
       <h1>Know what every<br>workout really did.</h1>
       <p>FitMetrics turns workouts into calories, intensity, training load, recovery, injury risk, readiness, race predictions and strength levels — all delivered as secure REST APIs.</p>
       <div class="btns"><button class="btn" onclick="go('play')">Try the API</button><button class="btn o" onclick="go('docs')">Read the docs</button></div></div>
@@ -186,11 +674,11 @@ nav{gap:22px}
 
 <!-- TRAINING LOAD -->
 <section id="train">
-  <div class="eyebrow">Training management</div><h2>Training load, injury risk & readiness</h2><p class="sub">Acute:Chronic Workload Ratio from the last 28 days of training load, plus today's readiness and session recommendation.</p>
+  <div class="eyebrow">Training management</div><h2>Training load, injury risk &amp; readiness</h2><p class="sub">Acute:Chronic Workload Ratio from the last 28 days of training load, plus today's readiness and session recommendation.</p>
   <div class="grid2" style="grid-template-columns:1.35fr 1fr">
     <div class="card"><h3>Last 28 days of training load <span class="chip" style="float:right">TRIMP per day</span></h3>
       <svg id="tChart" viewBox="0 0 600 190" style="width:100%;height:190px"></svg>
-      <div style="display:flex;gap:18px;font-size:12px;color:var(--mute);margin-top:4px"><span><b style="color:#a9a6f2">■</b> earlier days</span><span><b style="color:#ff7a2f">■</b> last 7 days (acute)</span><span><b style="color:#3d3bbf">- - -</b> 28-day avg (chronic)</span><span><b style="color:#d95f12">—</b> 7-day avg (acute)</span></div>
+      <div style="display:flex;gap:18px;font-size:12px;color:var(--mute);margin-top:4px;flex-wrap:wrap"><span><b style="color:#a9a6f2">■</b> earlier days</span><span><b style="color:#ff7a2f">■</b> last 7 days (acute)</span><span><b style="color:#3d3bbf">- - -</b> 28-day avg (chronic)</span><span><b style="color:#d95f12">—</b> 7-day avg (acute)</span></div>
       <div class="meter acwr"><i id="tPin" style="left:50%"></i></div><div class="scale" style="position:relative;height:14px"><span style="position:absolute;left:0">0.0</span><span style="position:absolute;left:32%;transform:translateX(-50%)">0.8</span><span style="position:absolute;left:52%;transform:translateX(-50%)">1.3</span><span style="position:absolute;left:60%;transform:translateX(-50%)">1.5</span><span style="position:absolute;right:0">2.5</span></div>
       <div class="grid3" style="margin-top:16px">
         <div><label>ACWR</label><b style="font-size:26px" id="tAc">—</b> <span class="chip" id="tZ">—</span></div>
@@ -213,15 +701,15 @@ nav{gap:22px}
 
 <!-- CARDIO -->
 <section id="cardio">
-  <div class="eyebrow">Cardio</div><h2>Pace analysis & VO₂max</h2><p class="sub">Race-time predictions with the Riegel model and cardio fitness from heart-rate data or a Cooper test.</p>
+  <div class="eyebrow">Cardio</div><h2>Pace analysis &amp; VO₂max</h2><p class="sub">Race-time predictions with the Riegel model and cardio fitness from heart-rate data or a Cooper test.</p>
   <div class="grid2">
-    <div class="card"><h3>Pace & race predictor</h3>
+    <div class="card"><h3>Pace &amp; race predictor</h3>
       <div class="f3"><div><label>Activity</label><select id="pA"><option value="running">Running</option><option value="cycling">Cycling</option></select></div><div><label>Distance (km)</label><input id="pD" value="5"></div><div><label>Time (min)</label><input id="pT" value="25"></div></div>
       <button class="btn" style="width:100%" onclick="paceCalc()">Analyse pace</button>
       <div class="grid3" style="margin:18px 0 6px"><div><label>Pace</label><b style="font-size:24px" id="pP">—</b><small style="color:var(--mute)"> /km</small></div><div><label>Speed</label><b style="font-size:24px" id="pS">—</b><small style="color:var(--mute)"> km/h</small></div><div><label>Model</label><small id="pM" class="mono">—</small></div></div>
       <table><tr><th>Predicted distance</th><th>Finish time</th><th>Pace /km</th></tr><tbody id="pTab"></tbody></table>
     </div>
-    <div class="card"><h3>VO₂max & fitness age</h3>
+    <div class="card"><h3>VO₂max &amp; fitness age</h3>
       <div class="f3"><div><label>Age</label><input id="vA" value="21"></div><div><label>Gender</label><select id="vG"><option value="male">Male</option><option value="female">Female</option></select></div><div><label>Resting HR</label><input id="vR" value="62"></div></div>
       <div class="f2"><div><label>Measured max HR (optional)</label><input id="vM" placeholder="auto"></div><div><label>Cooper 12-min distance m (optional)</label><input id="vC" placeholder="—"></div></div>
       <button class="btn" style="width:100%" onclick="vo2()">Estimate VO₂max</button>
@@ -234,9 +722,9 @@ nav{gap:22px}
 
 <!-- STRENGTH -->
 <section id="str">
-  <div class="eyebrow">Strength</div><h2>Strength analysis & session volume</h2><p class="sub">Estimate 1RM and strength level from one set, or log a full gym session to get volume, intensity and muscle-group breakdown.</p>
+  <div class="eyebrow">Strength</div><h2>Strength analysis &amp; session volume</h2><p class="sub">Estimate 1RM and strength level from one set, or log a full gym session to get volume, intensity and muscle-group breakdown.</p>
   <div class="grid2" style="grid-template-columns:1fr 1.3fr">
-    <div class="card"><h3>1RM & strength level</h3>
+    <div class="card"><h3>1RM &amp; strength level</h3>
       <div class="f2"><div><label>Exercise</label><select id="sEx"><option value="bench_press">Bench press</option><option value="squat">Squat</option><option value="deadlift">Deadlift</option><option value="overhead_press">Overhead press</option></select></div><div><label>Bodyweight (kg)</label><input id="sBw" value="74"></div></div>
       <div class="f2"><div><label>Weight (kg)</label><input id="sW" value="80"></div><div><label>Reps</label><input id="sR" value="6"></div></div>
       <button class="btn" style="width:100%" onclick="lift()">Analyse lift</button>
@@ -260,7 +748,7 @@ nav{gap:22px}
     <div><label>Endpoint</label><select id="pEp" onchange="fillBody()"></select>
       <label style="margin-top:12px">Header · X-API-Key</label><input id="pKey" class="mono">
       <label style="margin-top:12px">Request body (JSON)</label><textarea id="pBody" rows="13"></textarea>
-      <button class="btn" style="margin-top:14px;background:var(--acc)" onclick="send()">Send request ▶</button></div>
+      <button class="btn" style="margin-top:14px;background:var(--accent)" onclick="send()">Send request ▶</button></div>
     <div><label>Response <span class="status" id="pStat" style="float:right"></span></label><pre id="pOut">// response will appear here</pre></div>
   </div>
 </section>
@@ -283,7 +771,7 @@ nav{gap:22px}
   <div class="flow">
     <div class="node"><b>FitPulse API</b><br><small style="color:var(--mute)">23MIC0052 · energy needs</small></div>
     <div class="arrow">POST /fitness/calories<b>⇄</b>JSON</div>
-    <div class="node me"><b>FitMetrics API</b><br><small style="color:var(--mute)">23MIC0060 · workout analytics</small></div>
+    <div class="node me"><b>FitMetrics API</b><br><small style="color:var(--ink)">23MIC0060 · workout analytics</small></div>
     <div class="arrow">POST /metrics/* + partner key<b>⇄</b>JSON</div>
     <div class="node"><b>Progress Manager</b><br><small style="color:var(--mute)">23MIC0052 · progress tracking</small></div>
   </div>
@@ -362,7 +850,7 @@ async function makeKey(){let r;try{r=await fetch(API+'/keys',{method:'POST',head
   if(!r.success){$('kErr').textContent=r.error||'Could not create key';return}$('kErr').textContent='';KEY=r.data.apiKey;store.set(KEY);$('kOut').textContent=KEY;$('keyForm').style.display='none';$('keyDone').style.display='';$('pKey').value=KEY;health()}
 function alertBox(t){$('kOut').textContent=t}
 function health(){return fetch(API+'/health').then(r=>r.json()).then(()=>{offline(false);$('health').textContent='● API online · '+keyLabel();$('health').style.cssText='';return true})
-  .catch(()=>{offline(true);$('health').textContent='● API offline';$('health').style.cssText='background:#fdecee;color:#d0314a';return false})}
+  .catch(()=>{offline(true);$('health').textContent='● API offline';$('health').style.cssText='background:#ff8a65;color:#1d1d1f';return false})}
 // ---------- dashboard
 async function dash(){
   health();
@@ -399,11 +887,11 @@ async function pdf(){let r;try{r=await fetch(API+'/reports/workout',{method:'POS
   const b=await r.blob();const u=URL.createObjectURL(b);const l=document.createElement('a');l.href=u;l.download='fitmetrics-workout-report.pdf';l.click()}
 // ---------- training load
 function chart(t){const W=600,H=170,bw=W/28,mx=Math.max(...loads,1);let s='';
-  loads.forEach((x,i)=>{const h=x/mx*(H-20);s+=`<rect x="${i*bw+3}" y="${H-h}" width="${bw-6}" height="${h}" rx="3" fill="${i>=21?'#ff7a2f':'#a9a6f2'}"/>`});
+  loads.forEach((x,i)=>{const h=x/mx*(H-20);s+=`<rect x="${i*bw+3}" y="${H-h}" width="${bw-6}" height="${h}" rx="3" fill="${i>=21?'#ff8a65':'#a9a6f2'}" stroke="#1d1d1f" stroke-width="1"/>`});
   const cy=H-t.chronicLoad/mx*(H-20),ay=H-t.acuteLoad/mx*(H-20);
-  s+=`<line x1="0" x2="${W}" y1="${cy}" y2="${cy}" stroke="#3d3bbf" stroke-dasharray="5 4"/>`;
-  s+=`<line x1="${21*bw}" x2="${W}" y1="${ay}" y2="${ay}" stroke="#d95f12" stroke-width="2"/>`;
-  ['Week 1','Week 2','Week 3','This week'].forEach((w,i)=>s+=`<text x="${i*7*bw+7*bw/2}" y="186" font-size="11" text-anchor="middle" fill="#6b6f8e">${w} · ${t.weeklyLoads[i]}</text>`);
+  s+=`<line x1="0" x2="${W}" y1="${cy}" y2="${cy}" stroke="#3d3bbf" stroke-width="2" stroke-dasharray="5 4"/>`;
+  s+=`<line x1="${21*bw}" x2="${W}" y1="${ay}" y2="${ay}" stroke="#1d1d1f" stroke-width="2.5"/>`;
+  ['Week 1','Week 2','Week 3','This week'].forEach((w,i)=>s+=`<text x="${i*7*bw+7*bw/2}" y="186" font-size="11" font-weight="600" text-anchor="middle" fill="#626262">${w} · ${t.weeklyLoads[i]}</text>`);
   $('tChart').innerHTML=s}
 async function balance(){const r=await post('/metrics/training-balance',{dailyLoads:loads});if(!r.success){$('tAdv').innerHTML=`<span style="color:#d0314a">${errText(r)}</span>`;return}const t=r.data;chart(t);
   $('tPin').style.left=Math.min(t.acwr/2.5*100,99)+'%';$('tAc').textContent=t.acwr;$('tZ').textContent=t.zone;$('tZ').className='chip '+(t.injuryRisk=='High'?'or':t.injuryRisk=='Moderate'?'or':'gr');
@@ -412,9 +900,9 @@ async function balance(){const r=await post('/metrics/training-balance',{dailyLo
 function randomLoads(){loads=LOADS.slice(0,21).concat([150,120,160,0,170,140,130]);balance()}
 async function ready(){const res=await post('/metrics/readiness',{lastLoad:v('rL'),hoursSince:v('rH'),restingHr:v('rR'),baselineRestingHr:v('rB'),sleepHours:v('rS'),soreness:v('rSo')});
   if(!res.success){$('rRec').innerHTML=`<span style="color:#d0314a">${errText(res)}</span>`;return}const r=res.data;
-  const c=r.readinessScore>=80?'#14a37f':r.readinessScore>=60?'#5b58e6':r.readinessScore>=40?'#fb923c':'#f43f5e';
-  $('rRing').style.background=`conic-gradient(${c} ${r.readinessScore*3.6}deg,#eef0f7 0)`;$('rScore').textContent=r.readinessScore;$('rStat').textContent=r.status;
-  const B=r.breakdown;$('rBreak').innerHTML=[['Recovery',B.recovery,50],['Heart rate',B.heartRate,25],['Sleep',B.sleep,15],['Soreness',B.soreness,10]].map(([k,x,m])=>`<div class="hbar"><span>${k}</span><div class="bar"><i style="width:${x/m*100}%;background:var(--pri2)"></i></div><b>${x}/${m}</b></div>`).join('');
+  const c=r.readinessScore>=80?'#b8f28b':r.readinessScore>=60?'#68cea0':r.readinessScore>=40?'#ff8a65':'#f43f5e';
+  $('rRing').style.background=`conic-gradient(${c} ${r.readinessScore*3.6}deg,#ebebf0 0)`;$('rScore').textContent=r.readinessScore;$('rStat').textContent=r.status;
+  const B=r.breakdown;$('rBreak').innerHTML=[['Recovery',B.recovery,50],['Heart rate',B.heartRate,25],['Sleep',B.sleep,15],['Soreness',B.soreness,10]].map(([k,x,m])=>`<div class="hbar"><span>${k}</span><div class="bar"><i style="width:${x/m*100}%;background:var(--accent)"></i></div><b>${x}/${m}</b></div>`).join('');
   $('rRec').innerHTML=`<b>Today: ${r.recommendation.type}</b> — ${r.recommendation.zone}, ${r.recommendation.durationMin} min`;
   $('rFlags').innerHTML=r.flags.map(f=>`<div class="flag">⚠ ${f}</div>`).join('')}
 // ---------- cardio

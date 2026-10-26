@@ -4,130 +4,553 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>FitPulse — Personal Fitness Performance & Progress Management</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#f5f6fb;--card:#fff;--ink:#141632;--mute:#6b6f8e;--line:#e4e6f0;--pri:#0f766e;--pri2:#14b8a6;--acc:#f59e0b;--good:#14a37f;--code:#0b2420}
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:14px}
-nav{background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:28px;padding:14px 40px;position:sticky;top:0;z-index:5}
-.logo{display:flex;align-items:center;gap:9px;font-weight:800;font-size:17px}
-.logo i{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--pri),var(--acc));display:grid;place-items:center;color:#fff;font-style:normal;font-size:15px}
-nav a{color:var(--mute);text-decoration:none;font-weight:500;cursor:pointer;padding:6px 2px;border-bottom:2px solid transparent}
-nav a.on{color:var(--pri);border-color:var(--pri)}
-nav .sp{flex:1}
-.pill{font-size:12px;padding:5px 11px;border-radius:99px;background:#e8f7f2;color:var(--good);font-weight:600}
-.btn{background:var(--pri);color:#fff;border:0;border-radius:9px;padding:10px 18px;font-weight:600;cursor:pointer;font-family:inherit}
-.btn.o{background:#fff;color:var(--pri);border:1px solid var(--line)}
-main{max-width:1180px;margin:0 auto;padding:32px 40px 60px}
-section{display:none}section.on{display:block}
-.hero{display:grid;grid-template-columns:1.1fr 1fr;gap:32px;align-items:center;background:linear-gradient(120deg,#064e3b,#0f766e 60%,#0d9488);border-radius:20px;padding:40px;color:#fff;margin-bottom:24px}
-.hero h1{font-size:36px;line-height:1.1;margin:12px 0}
-.hero p{opacity:.85;line-height:1.6;max-width:460px}
-.tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:rgba(255,255,255,.14);padding:5px 10px;border-radius:6px}
-.hero .btns{display:flex;gap:10px;margin-top:20px}
-.hero .btn{background:var(--acc)}.hero .btn.o{background:transparent;color:#fff;border-color:rgba(255,255,255,.35)}
-pre,.mono{font-family:'JetBrains Mono',monospace;font-size:12.5px}
-.codebox{background:var(--code);border-radius:14px;padding:18px;color:#c9f3e8;box-shadow:0 20px 40px rgba(0,0,0,.25)}
-.codebox .h{display:flex;gap:6px;margin-bottom:12px;align-items:center;color:#7fb8ab;font-size:12px}
-.codebox .h b{width:9px;height:9px;border-radius:50%;background:#ff5f57}.codebox .h b:nth-child(2){background:#febc2e}.codebox .h b:nth-child(3){background:#28c840}
-.k{color:#ff9f6b}.s{color:#9be29b}.n{color:#7cc7ff}
-.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px}
-.stat small{color:var(--mute);font-weight:500;display:flex;justify-content:space-between}
-.stat .v{font-size:28px;font-weight:800;margin:8px 0 4px}
-.stat .v span{font-size:14px;color:var(--mute);font-weight:500}
-.chip{font-size:11px;font-weight:600;padding:3px 8px;border-radius:6px;background:#ddf4ef;color:var(--pri)}
-.chip.or{background:#fef3c7;color:#b45309}.chip.gr{background:#e6f6f1;color:var(--good)}
-h2{font-size:24px;margin-bottom:6px}h3{font-size:15px;margin-bottom:14px}
-.sub{color:var(--mute);margin-bottom:22px}
-.eyebrow{font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--acc);text-transform:uppercase;margin-bottom:6px}
-.zone{display:grid;grid-template-columns:150px 1fr 90px;align-items:center;gap:12px;margin:9px 0;font-size:13px}
-.bar{height:10px;border-radius:6px;background:#eef0f7;overflow:hidden}.bar i{display:block;height:100%;border-radius:6px}
-label{display:block;font-size:12px;font-weight:600;color:var(--mute);margin-bottom:5px}
-input,select,textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:9px;font-family:inherit;font-size:14px;background:#fafbff}
-.f2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
-.f3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px}
-.seg{display:flex;gap:6px;margin-bottom:14px}.seg button{flex:1;padding:9px;border:1px solid var(--line);border-radius:9px;background:#fff;font-family:inherit;font-weight:600;color:var(--mute);cursor:pointer}
-.seg button.on{background:var(--pri);color:#fff;border-color:var(--pri)}
-.res{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px dashed var(--line)}
-.res b{font-size:18px}
-table{width:100%;border-collapse:collapse;font-size:13px}
-th{text-align:left;color:var(--mute);font-weight:600;padding:9px 10px;border-bottom:1px solid var(--line);font-size:12px}
-td{padding:10px;border-bottom:1px solid var(--line)}
-.m{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;padding:3px 7px;border-radius:5px;background:#fef3c7;color:#b45309}
-.m.get{background:#e6f6f1;color:var(--good)}
-.pg{display:grid;grid-template-columns:1fr 1fr;gap:0;background:var(--code);border-radius:16px;overflow:hidden}
-.pg>div{padding:20px}.pg>div+div{border-left:1px solid #1d3d37}
-.pg select,.pg textarea{background:#12312b;border-color:#245049;color:#dfe1ff;font-family:'JetBrains Mono',monospace;font-size:12.5px}
-.pg label{color:#7fb8ab}
-.pg pre{color:#c9f3e8;white-space:pre-wrap;min-height:330px}
-.status{font-size:12px;color:#7ee2b8;font-family:'JetBrains Mono',monospace}
-.ep{border:1px solid var(--line);border-radius:12px;margin-bottom:12px;background:#fff}
-.ep .t{display:flex;gap:12px;align-items:center;padding:14px 18px}
-.ep .t code{font-family:'JetBrains Mono',monospace;font-weight:600}
-.ep .t>span:last-child{color:var(--mute);margin-left:auto}
-.ep .b{border-top:1px solid var(--line);padding:14px 18px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.ep .b>div{min-width:0}.ep .b pre{white-space:pre-wrap;word-break:break-word;background:#f4f5fb;padding:12px;border-radius:9px;font-size:12px}
-.flow{display:flex;align-items:center;gap:14px;justify-content:center;margin:10px 0 24px}
-.node{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 20px;text-align:center;min-width:200px}
-.node.me{border:2px solid var(--pri);background:#e8f6f2}
-.arrow{font-size:12px;color:var(--mute);text-align:center}.arrow b{display:block;font-size:22px;color:var(--acc)}
+:root {
+  --background: #f5f5f7;
+  --surface: #ffffff;
+  --surface-secondary: #f5fcf8;
+  --text-primary: #1d1d1f;
+  --text-secondary: #626262;
+  --border-strong: #1d1d1f;
+  --accent: #68cea0;
+  --accent-secondary: #ff8a65;
+  --accent-tertiary: #b8f28b;
+  --radius-card: 16px;
+  --radius-control: 10px;
+  --border-width: 2px;
+  --shadow-hard: 4px 4px 0 #1d1d1f;
+  --shadow-hard-hover: 6px 6px 0 #1d1d1f;
+  --shadow-hard-sm: 2px 2px 0 #1d1d1f;
+  --shadow-none: 0 0 0 transparent;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-press: 100ms;
+  --duration-base: 250ms;
 
-.grid5{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
-.summary{background:#fff;border:1px solid var(--line);border-left:5px solid var(--acc);border-radius:14px;padding:18px 22px;margin-bottom:24px;display:flex;gap:18px;align-items:center}
-.summary .ic{width:44px;height:44px;border-radius:12px;background:#fef3c7;display:grid;place-items:center;font-size:22px;flex:none}
-.summary p{font-size:15px;line-height:1.55}
-.zone.hl{background:#fffbeb;border-radius:8px;padding:4px 6px;margin-left:-6px;margin-right:-6px;font-weight:700}
-.zone.hl b{color:#b45309}
-.meter{height:12px;border-radius:8px;background:linear-gradient(90deg,#a5b4fc,#6ee7b7,#fcd34d,#fb923c,#f43f5e);position:relative;margin:18px 0 8px}
-.meter i{position:absolute;top:-6px;width:4px;height:24px;background:var(--ink);border-radius:3px}
-.lvl{display:flex;gap:4px;margin-top:10px}.lvl span{flex:1;text-align:center;font-size:11px;padding:6px 0;border-radius:6px;background:#eef0f7;color:var(--mute);font-weight:600}
-.lvl span.on{background:var(--pri);color:#fff}
-.sec{font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--mute);text-transform:uppercase;margin:16px 0 4px}
-
-nav{gap:22px}
-.grid5{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
-.summary{background:#fff;border:1px solid var(--line);border-left:5px solid var(--acc);border-radius:14px;padding:18px 22px;margin-bottom:24px;display:flex;gap:18px;align-items:center}
-.summary .ic{width:44px;height:44px;border-radius:12px;background:#fef3c7;display:grid;place-items:center;font-size:22px;flex:none}
-.summary p{font-size:15px;line-height:1.55}
-.zone.hl{background:#fffbeb;border-radius:8px;padding:4px 6px;margin-left:-6px;margin-right:-6px;font-weight:700}
-.zone.hl b{color:#b45309}
-.meter{height:12px;border-radius:8px;background:linear-gradient(90deg,#a5b4fc,#6ee7b7,#fcd34d,#fb923c,#f43f5e);position:relative;margin:18px 0 8px}
-.meter i{position:absolute;top:-6px;width:4px;height:24px;background:var(--ink);border-radius:3px}
-.meter.acwr{background:linear-gradient(90deg,#a5b4fc 0 32%,#6ee7b7 32% 52%,#fcd34d 52% 60%,#f43f5e 60%)}
-.scale{display:flex;justify-content:space-between;font-size:11px;color:var(--mute)}
-.lvl{display:flex;gap:4px;margin-top:10px}.lvl span{flex:1;text-align:center;font-size:11px;padding:6px 0;border-radius:6px;background:#eef0f7;color:var(--mute);font-weight:600}
-.lvl span.on{background:var(--pri);color:#fff}
-.sec{font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--mute);text-transform:uppercase;margin:16px 0 4px}
-.ring{width:150px;height:150px;border-radius:50%;display:grid;place-items:center;margin:6px auto 12px}
-.ring div{width:118px;height:118px;border-radius:50%;background:#fff;display:grid;place-items:center;text-align:center}
-.ring b{font-size:38px;line-height:1}.ring small{color:var(--mute);font-weight:600}
-.rec{background:#e8f6f2;border-radius:12px;padding:14px 16px;margin-top:12px}
-.rec b{color:var(--pri)}
-.flag{font-size:12.5px;color:#b4471a;background:#fffbeb;border-radius:8px;padding:8px 10px;margin-top:8px}
-.hbar{display:grid;grid-template-columns:90px 1fr 70px;gap:10px;align-items:center;margin:8px 0;font-size:13px}
-.sets td input{padding:6px 8px;font-size:13px}
-.sets td{padding:6px 6px}
-.x{background:none;border:0;color:var(--mute);cursor:pointer;font-size:16px}
-.modal{position:fixed;inset:0;background:rgba(20,22,50,.45);display:none;place-items:center;z-index:20}
-.modal.on{display:grid}
-.modal .card{width:440px;box-shadow:0 30px 60px rgba(0,0,0,.25)}
-.keybox{font-family:'JetBrains Mono',monospace;background:#0b2420;color:#7ee2b8;padding:12px;border-radius:9px;margin:10px 0;word-break:break-all;font-size:13px}
-.grp{font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--acc);text-transform:uppercase;margin:22px 0 8px}
-
-.chart{width:100%;height:230px}
-.goalbar{height:14px;border-radius:8px;background:#e6efed;overflow:hidden;margin:10px 0 6px}.goalbar i{display:block;height:100%;background:linear-gradient(90deg,#14b8a6,#0f766e);border-radius:8px}
-.macro{display:grid;grid-template-columns:80px 1fr 80px;gap:10px;align-items:center;margin:9px 0;font-size:13px}
-.big{font-size:34px;font-weight:800}
-.tabs{display:flex;gap:8px;margin-bottom:14px}
-.badge-src{font-size:11px;font-weight:700;color:#3d3bbf;background:#eeedfd;padding:3px 8px;border-radius:6px}
+  /* Mapped FitPulse Tokens */
+  --bg: var(--background);
+  --card: var(--surface);
+  --ink: var(--text-primary);
+  --mute: var(--text-secondary);
+  --line: #d2d2d7;
+  --pri: #0f766e;
+  --pri2: #14b8a6;
+  --acc: #ff8a65;
+  --good: #14a37f;
+  --code: #0f221f;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 14.5px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+nav {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: var(--border-width) solid var(--border-strong);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 32px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  flex-wrap: wrap;
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+  font-size: 18px;
+  letter-spacing: -0.025em;
+  margin-right: 12px;
+}
+.logo i {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: var(--accent-tertiary) !important;
+  border: var(--border-width) solid var(--border-strong);
+  box-shadow: var(--shadow-hard-sm);
+  display: grid;
+  place-items: center;
+  color: var(--ink);
+  font-style: normal;
+  font-size: 16px;
+}
+nav a {
+  color: var(--mute);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 13.5px;
+  cursor: pointer;
+  padding: 7px 12px;
+  border-radius: var(--radius-control);
+  border: var(--border-width) solid transparent;
+  transition: transform var(--duration-press) var(--ease-out),
+              background-color var(--duration-press) var(--ease-out),
+              box-shadow var(--duration-press) var(--ease-out);
+}
+nav a:hover {
+  color: var(--ink);
+  background: var(--surface-secondary);
+}
+nav a.on {
+  color: var(--ink);
+  background: var(--accent);
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-hard-sm);
+  font-weight: 700;
+}
+nav .sp { flex: 1; }
+.pill {
+  font-size: 12px;
+  padding: 5px 12px;
+  border-radius: 8px;
+  background: var(--accent-tertiary);
+  color: var(--ink);
+  border: var(--border-width) solid var(--border-strong);
+  font-weight: 700;
+}
+.btn {
+  background: var(--accent);
+  color: var(--ink);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-control);
+  padding: 10px 18px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  box-shadow: var(--shadow-hard);
+  transition: transform var(--duration-press) var(--ease-out),
+              box-shadow var(--duration-press) var(--ease-out),
+              background-color var(--duration-press) var(--ease-out);
+}
+.btn:hover {
+  background: #78d6ad;
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-hard-hover);
+}
+.btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 var(--border-strong);
+}
+.btn.o {
+  background: var(--surface);
+  color: var(--ink);
+  border: var(--border-width) solid var(--border-strong);
+}
+.btn.o:hover {
+  background: var(--surface-secondary);
+}
+main {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 36px 32px 72px;
+}
+section { display: none; }
+section.on { display: block; }
+.hero {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 32px;
+  align-items: center;
+  background: var(--surface-secondary);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-hard-hover);
+  padding: 40px;
+  color: var(--ink);
+  margin-bottom: 28px;
+}
+.hero h1 {
+  font-size: 38px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+  margin: 14px 0;
+}
+.hero p {
+  color: var(--mute);
+  line-height: 1.6;
+  max-width: 470px;
+  font-size: 15px;
+}
+.tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: var(--accent-tertiary);
+  color: var(--ink);
+  border: var(--border-width) solid var(--border-strong);
+  box-shadow: var(--shadow-hard-sm);
+  padding: 5px 10px;
+  border-radius: 6px;
+}
+.hero .btns { display: flex; gap: 12px; margin-top: 22px; }
+.hero .btn { background: var(--accent); color: var(--ink); }
+.hero .btn.o { background: var(--surface); color: var(--ink); border-color: var(--border-strong); }
+pre, .mono { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; }
+.codebox {
+  background: var(--code);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: 14px;
+  padding: 18px;
+  color: #c9f3e8;
+  box-shadow: var(--shadow-hard);
+}
+.codebox .h {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+  align-items: center;
+  color: #7fb8ab;
+  font-size: 12px;
+}
+.codebox .h b { width: 10px; height: 10px; border-radius: 50%; background: #ff5f57; border: 1px solid rgba(0,0,0,0.3); }
+.codebox .h b:nth-child(2) { background: #febc2e; }
+.codebox .h b:nth-child(3) { background: #28c840; }
+.k { color: #ff9f6b; }
+.s { color: #b8f28b; }
+.n { color: #7cc7ff; }
+.grid4, .grid5 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  margin-bottom: 24px;
+}
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.card {
+  background: var(--card);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-hard);
+  padding: 24px;
+}
+.stat small {
+  color: var(--mute);
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.stat .v {
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin: 10px 0 4px;
+}
+.stat .v span {
+  font-size: 14px;
+  color: var(--mute);
+  font-weight: 600;
+}
+.chip {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 6px;
+  background: var(--surface-secondary);
+  color: var(--ink);
+  border: 1.5px solid var(--border-strong);
+}
+.chip.or { background: var(--accent-secondary); color: var(--ink); }
+.chip.gr { background: var(--accent-tertiary); color: var(--ink); }
+h2 {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  margin-bottom: 6px;
+}
+h3 {
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  margin-bottom: 14px;
+}
+.sub { color: var(--mute); margin-bottom: 24px; font-size: 15px; }
+.eyebrow {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--ink);
+  background: var(--accent);
+  border: 1.5px solid var(--border-strong);
+  padding: 3px 8px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.zone { display: grid; grid-template-columns: 150px 1fr 90px; align-items: center; gap: 12px; margin: 10px 0; font-size: 13px; }
+.bar {
+  height: 12px;
+  border-radius: 6px;
+  background: #ebebf0;
+  border: 1.5px solid var(--border-strong);
+  overflow: hidden;
+}
+.bar i { display: block; height: 100%; }
+label {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+input, select, textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-control);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  background: var(--surface);
+  color: var(--ink);
+  transition: background-color var(--duration-press) var(--ease-out),
+              box-shadow var(--duration-press) var(--ease-out);
+}
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  background: var(--surface-secondary);
+  box-shadow: var(--shadow-hard-sm);
+}
+.f2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+.f3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+.seg { display: flex; gap: 6px; margin-bottom: 14px; }
+.seg button {
+  flex: 1;
+  padding: 9px;
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-control);
+  background: var(--surface);
+  font-family: inherit;
+  font-weight: 700;
+  color: var(--ink);
+  cursor: pointer;
+}
+.seg button.on { background: var(--accent); color: var(--ink); box-shadow: var(--shadow-hard-sm); }
+.res {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1.5px dashed var(--line);
+}
+.res b { font-size: 17px; font-weight: 800; }
+table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+th {
+  text-align: left;
+  color: var(--mute);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 10px;
+  border-bottom: var(--border-width) solid var(--border-strong);
+  font-size: 11.5px;
+}
+td { padding: 10px; border-bottom: 1px solid var(--line); }
+.m {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+  border: 1.5px solid var(--border-strong);
+  background: var(--accent);
+  color: var(--ink);
+}
+.m.get { background: var(--accent-tertiary); color: var(--ink); }
+.pg {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  background: var(--code);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-hard);
+  overflow: hidden;
+}
+.pg > div { padding: 24px; }
+.pg > div + div { border-left: var(--border-width) solid #22443e; }
+.pg select, .pg textarea, .pg input {
+  background: #16332e;
+  border-color: #2c5e55;
+  color: #f5f5f7;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12.5px;
+}
+.pg label { color: #8ecfc2; }
+.pg pre { color: #c9f3e8; white-space: pre-wrap; min-height: 330px; }
+.status { font-size: 12px; color: var(--accent-tertiary); font-family: 'JetBrains Mono', monospace; }
+.ep {
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-hard-sm);
+  margin-bottom: 12px;
+  background: var(--surface);
+}
+.ep .t { display: flex; gap: 12px; align-items: center; padding: 14px 18px; }
+.ep .t code { font-family: 'JetBrains Mono', monospace; font-weight: 700; }
+.ep .t > span:last-child { color: var(--mute); margin-left: auto; }
+.ep .b {
+  border-top: var(--border-width) solid var(--border-strong);
+  padding: 16px 18px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  background: var(--surface-secondary);
+}
+.ep .b > div { min-width: 0; }
+.ep .b pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: var(--surface);
+  border: 1.5px solid var(--border-strong);
+  padding: 12px;
+  border-radius: 9px;
+  font-size: 12px;
+}
+.flow { display: flex; align-items: center; gap: 16px; justify-content: center; margin: 14px 0 28px; flex-wrap: wrap; }
+.node {
+  background: var(--surface);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-hard-sm);
+  padding: 18px 22px;
+  text-align: center;
+  min-width: 210px;
+}
+.node.me {
+  background: var(--accent-tertiary);
+  box-shadow: var(--shadow-hard);
+}
+.arrow { font-size: 12px; font-weight: 700; color: var(--mute); text-align: center; }
+.arrow b { display: block; font-size: 22px; color: var(--ink); }
+.meter {
+  height: 14px;
+  border-radius: 8px;
+  border: 1.5px solid var(--border-strong);
+  background: linear-gradient(90deg, #a5b4fc, #6ee7b7, #fcd34d, #fb923c, #f43f5e);
+  position: relative;
+  margin: 18px 0 8px;
+}
+.meter i {
+  position: absolute;
+  top: -6px;
+  width: 6px;
+  height: 24px;
+  background: var(--ink);
+  border: 1.5px solid #fff;
+  border-radius: 3px;
+}
+.scale { display: flex; justify-content: space-between; font-size: 11.5px; font-weight: 600; color: var(--mute); }
+.sec {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--mute);
+  text-transform: uppercase;
+  margin: 16px 0 6px;
+}
+.rec {
+  background: var(--surface-secondary);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-top: 14px;
+}
+.rec b { color: var(--ink); }
+.flag {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  background: var(--accent-secondary);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-top: 8px;
+}
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(29, 29, 31, 0.55);
+  backdrop-filter: blur(6px);
+  display: none;
+  place-items: center;
+  z-index: 20;
+}
+.modal.on { display: grid; }
+.modal .card { width: 440px; max-width: calc(100vw - 32px); box-shadow: var(--shadow-hard-hover); }
+.keybox {
+  font-family: 'JetBrains Mono', monospace;
+  background: var(--code);
+  color: var(--accent-tertiary);
+  border: var(--border-width) solid var(--border-strong);
+  padding: 12px;
+  border-radius: 9px;
+  margin: 10px 0;
+  word-break: break-all;
+  font-size: 13px;
+}
+.grp {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--ink);
+  text-transform: uppercase;
+  margin: 24px 0 10px;
+}
+.chart { width: 100%; height: 230px; }
+.goalbar {
+  height: 14px;
+  border-radius: 8px;
+  border: 1.5px solid var(--border-strong);
+  background: #ebebf0;
+  overflow: hidden;
+  margin: 10px 0 6px;
+}
+.goalbar i {
+  display: block;
+  height: 100%;
+  background: var(--accent-tertiary);
+  border-right: 1.5px solid var(--border-strong);
+}
+.macro { display: grid; grid-template-columns: 80px 1fr 80px; gap: 10px; align-items: center; margin: 9px 0; font-size: 13px; font-weight: 600; }
+.big { font-size: 36px; font-weight: 800; letter-spacing: -0.03em; }
+.tabs { display: flex; gap: 8px; margin-bottom: 14px; }
+.badge-src {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink);
+  background: var(--accent);
+  border: 1.5px solid var(--border-strong);
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+@media (max-width: 900px) {
+  nav { padding: 12px 16px; }
+  main { padding: 24px 16px 48px; }
+  .hero, .grid2, .grid3, .grid4, .grid5, .pg { grid-template-columns: 1fr !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
 </style>
 </head>
 <body>
 <nav>
-  <div class="logo"><i style="background:linear-gradient(135deg,#0f766e,#f59e0b)">♥</i>FitPulse</div>
+  <div class="logo"><i>♥</i>FitPulse</div>
   <a data-s="dash" class="on">Dashboard</a><a data-s="energy">Energy &amp; Goals</a><a data-s="body">Body</a><a data-s="prog">Progress</a><a data-s="play">Playground</a><a data-s="docs">Docs</a><a data-s="intg">Integration</a>
   <div class="sp"></div><span class="pill" id="health">● checking…</span><button class="btn" onclick="openKey()">Get API Key</button>
 </nav>
@@ -138,8 +561,8 @@ nav{gap:22px}
   <div id="keyDone" style="display:none"><label>Your API key</label><div class="keybox" id="kOut"></div><p style="font-size:13px;color:var(--mute)">Saved in this browser — the website now uses your key.</p><button class="btn" style="margin-top:12px" onclick="closeKey()">Done</button></div>
 </div></div>
 <main>
-<div id="offline" style="display:none;background:#fffbeb;border:1px solid #fcd34d;border-radius:14px;padding:16px 20px;margin-bottom:22px;font-size:14px;line-height:1.6">
-  <b style="color:#b45309">The FitPulse backend isn't reachable.</b> Start it with <b>start_windows.bat</b> or <code class="mono">python run.py</code> inside the fitpulse folder, then open <code class="mono">http://localhost:8000</code>. <span style="color:var(--mute)">Trying: <code class="mono" id="apiUrl"></code></span>
+<div id="offline" style="display:none;background:var(--accent);border:2px solid var(--border-strong);box-shadow:var(--shadow-hard-sm);border-radius:14px;padding:16px 20px;margin-bottom:22px;font-size:14px;line-height:1.6">
+  <b>The FitPulse backend isn't reachable.</b> Start it with <b>start_windows.bat</b> or <code class="mono">python run.py</code> inside the fitpulse folder, then open <code class="mono">http://localhost:8000</code>. <span style="color:var(--mute)">Trying: <code class="mono" id="apiUrl"></code></span>
 </div>
 
 <!-- DASHBOARD -->
@@ -249,7 +672,7 @@ nav{gap:22px}
     <div><label>Endpoint</label><select id="pEp" onchange="fillBody()"></select>
       <label style="margin-top:12px">Header · X-API-Key</label><input id="pKey" class="mono">
       <label style="margin-top:12px">Request body (JSON)</label><textarea id="pBody" rows="13"></textarea>
-      <button class="btn" style="margin-top:14px;background:var(--acc)" onclick="send()">Send request ▶</button></div>
+      <button class="btn" style="margin-top:14px;background:var(--accent)" onclick="send()">Send request ▶</button></div>
     <div><label>Response <span class="status" id="pStat" style="float:right"></span></label><pre id="pOut">// response will appear here</pre></div>
   </div>
 </section>
@@ -270,7 +693,7 @@ nav{gap:22px}
 <section id="intg">
   <div class="eyebrow">Service-to-service</div><h2>Partner Integration</h2><p class="sub">FitPulse (23MIC0052) answers <b>“what does this person need, and how are they progressing?”</b> — FitMetrics (23MIC0060) answers <b>“what did each workout do?”</b></p>
   <div class="flow">
-    <div class="node me"><b>FitPulse API</b><br><small style="color:var(--mute)">23MIC0052 · energy &amp; progress</small></div>
+    <div class="node me"><b>FitPulse API</b><br><small style="color:var(--ink)">23MIC0052 · energy &amp; progress</small></div>
     <div class="arrow">POST /metrics/workout-analysis<br>POST /metrics/training-balance<b>⇄</b>JSON</div>
     <div class="node"><b>FitMetrics API</b><br><small style="color:var(--mute)">23MIC0060 · workout analytics</small></div>
   </div>
@@ -316,7 +739,7 @@ document.querySelectorAll('nav a').forEach(a=>a.onclick=()=>go(a.dataset.s));
 const row=(k,val,c='')=>`<div class="res"><span>${k}</span><b>${val} ${c}</b></div>`;
 const flag=t=>`<div class="flag">${t}</div>`;
 function health(){return fetch(API+'/health').then(r=>r.json()).then(()=>{offline(false);$('health').textContent='● API online · '+(KEY==DEMO?'demo key':'your key');$('health').style.cssText='';return true})
-  .catch(()=>{offline(true);$('health').textContent='● API offline';$('health').style.cssText='background:#fdecee;color:#d0314a';return false})}
+  .catch(()=>{offline(true);$('health').textContent='● API offline';$('health').style.cssText='background:#ff8a65;color:#1d1d1f';return false})}
 function openKey(){$('keyModal').classList.add('on');$('keyForm').style.display='';$('keyDone').style.display='none'}
 function closeKey(){$('keyModal').classList.remove('on')}
 async function makeKey(){let r;try{r=await fetch(API+'/keys',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:$('kName').value,email:$('kMail').value})}).then(r=>r.json())}catch(e){r={success:false,error:'API is offline'}}
@@ -326,17 +749,17 @@ function setProfile(p){PROFILE=(p||'demo').replace(/[^A-Za-z0-9_-]/g,'')||'demo'
 
 // ---------- weight chart
 function chart(ms, goal){
-  const W=600,H=230,pad=34; if(!ms.length){$('wChart').innerHTML='<text x="300" y="115" text-anchor="middle" fill="#6b6f8e" font-size="14">No measurements yet — log one or load demo data</text>';return}
+  const W=600,H=230,pad=34; if(!ms.length){$('wChart').innerHTML='<text x="300" y="115" text-anchor="middle" fill="#626262" font-size="14">No measurements yet — log one or load demo data</text>';return}
   const t=ms.map(m=>new Date(m.date).getTime()), ws=ms.map(m=>m.weight);
   let lo=Math.min(...ws,goal?goal.targetWeight:99), hi=Math.max(...ws); lo=Math.floor(lo-1); hi=Math.ceil(hi+1);
   let t0=t[0], t1=Math.max(t[t.length-1], goal?new Date(goal.targetDate).getTime():0); if(t1===t0)t1=t0+86400000;
   const X=x=>pad+(x-t0)/(t1-t0)*(W-pad*2), Y=y=>H-pad-(y-lo)/(hi-lo)*(H-pad*2);
   let s='';
-  for(let g=lo; g<=hi; g+=Math.max(1,Math.round((hi-lo)/4))){s+=`<line x1="${pad}" x2="${W-pad}" y1="${Y(g)}" y2="${Y(g)}" stroke="#e4e6f0"/><text x="${pad-6}" y="${Y(g)+4}" font-size="11" text-anchor="end" fill="#6b6f8e">${g}</text>`}
-  if(goal){const gy=Y(goal.targetWeight); s+=`<line x1="${pad}" x2="${W-pad}" y1="${gy}" y2="${gy}" stroke="#f59e0b" stroke-dasharray="6 4" stroke-width="2"/><text x="${W-pad}" y="${gy-6}" font-size="11" text-anchor="end" fill="#b45309">goal ${goal.targetWeight} kg · ${goal.targetDate}</text>`}
-  s+=`<polyline fill="none" stroke="#0f766e" stroke-width="3" points="${ms.map((m,i)=>X(t[i])+','+Y(m.weight)).join(' ')}"/>`;
-  ms.forEach((m,i)=>s+=`<circle cx="${X(t[i])}" cy="${Y(m.weight)}" r="4.5" fill="#fff" stroke="#0f766e" stroke-width="2.5"><title>${m.date}: ${m.weight} kg</title></circle>`);
-  s+=`<text x="${X(t[0])}" y="${H-10}" font-size="11" fill="#6b6f8e">${ms[0].date}</text><text x="${X(t[t.length-1])}" y="${H-10}" font-size="11" text-anchor="middle" fill="#6b6f8e">${ms[ms.length-1].date}</text>`;
+  for(let g=lo; g<=hi; g+=Math.max(1,Math.round((hi-lo)/4))){s+=`<line x1="${pad}" x2="${W-pad}" y1="${Y(g)}" y2="${Y(g)}" stroke="#e5e5ea"/><text x="${pad-6}" y="${Y(g)+4}" font-size="11" font-weight="600" text-anchor="end" fill="#626262">${g}</text>`}
+  if(goal){const gy=Y(goal.targetWeight); s+=`<line x1="${pad}" x2="${W-pad}" y1="${gy}" y2="${gy}" stroke="#ff8a65" stroke-dasharray="6 4" stroke-width="2"/><text x="${W-pad}" y="${gy-6}" font-size="11" font-weight="700" text-anchor="end" fill="#1d1d1f">goal ${goal.targetWeight} kg · ${goal.targetDate}</text>`}
+  s+=`<polyline fill="none" stroke="#1d1d1f" stroke-width="3" points="${ms.map((m,i)=>X(t[i])+','+Y(m.weight)).join(' ')}"/>`;
+  ms.forEach((m,i)=>s+=`<circle cx="${X(t[i])}" cy="${Y(m.weight)}" r="5" fill="#68cea0" stroke="#1d1d1f" stroke-width="2"><title>${m.date}: ${m.weight} kg</title></circle>`);
+  s+=`<text x="${X(t[0])}" y="${H-10}" font-size="11" font-weight="600" fill="#626262">${ms[0].date}</text><text x="${X(t[t.length-1])}" y="${H-10}" font-size="11" font-weight="600" text-anchor="middle" fill="#626262">${ms[ms.length-1].date}</text>`;
   $('wChart').innerHTML=s}
 
 // ---------- dashboard
@@ -367,7 +790,7 @@ async function energy(){
   const r=await post('/fitness/calories',b); if(!r.success){$('eOut').innerHTML=flag(errText(r));return} const e=r.data,m=e.macros;
   $('eOut').innerHTML=`<div class="sec">BMR models</div>`+row('Mifflin-St Jeor',e.bmrMifflinStJeor+' kcal')+row('Harris-Benedict',e.bmrHarrisBenedict+' kcal')+row('Katch-McArdle',e.bmrKatchMcArdle?e.bmrKatchMcArdle+' kcal':'— (needs body fat %)')+
    `<div class="sec">Daily energy</div>`+row('Maintenance (TDEE)',e.tdee+' kcal',`<span class="chip">×${e.activityMultiplier}</span>`)+row('Target for "'+e.goal+'"',e.targetCalories+' kcal',`<span class="chip or">${e.calorieAdjustment>=0?'+':''}${e.calorieAdjustment}</span>`)+
-   `<div class="sec">Macros</div>`+[['Protein',m.proteinGrams,m.proteinPct,'#0f766e'],['Carbs',m.carbsGrams,m.carbsPct,'#14b8a6'],['Fat',m.fatGrams,m.fatPct,'#f59e0b']].map(([k,g,p,c])=>`<div class="macro"><span>${k}</span><div class="bar"><i style="width:${p}%;background:${c}"></i></div><b>${g} g</b></div>`).join('')}
+   `<div class="sec">Macros</div>`+[['Protein',m.proteinGrams,m.proteinPct,'#b8f28b'],['Carbs',m.carbsGrams,m.carbsPct,'#68cea0'],['Fat',m.fatGrams,m.fatPct,'#ff8a65']].map(([k,g,p,c])=>`<div class="macro"><span>${k}</span><div class="bar"><i style="width:${p}%;background:${c}"></i></div><b>${g} g</b></div>`).join('')}
 async function plan(){
   const r=await post('/fitness/goal-plan',{...ME(),targetWeight:v('gT'),weeks:v('gWk')}); if(!r.success){$('gOut').innerHTML=flag(errText(r));return} const g=r.data;
   $('gK').textContent=g.dailyCalorieTarget;$('gS').textContent=g.safety;$('gS').className='chip '+(['Unsafe','Aggressive'].includes(g.safety)?'or':'gr');
