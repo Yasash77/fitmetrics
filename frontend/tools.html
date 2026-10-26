@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FitMetrics — Workout Performance & Training Analytics API</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f5f6fb;--card:#fff;--ink:#141632;--mute:#6b6f8e;--line:#e4e6f0;--pri:#3d3bbf;--pri2:#5b58e6;--acc:#ff7a2f;--good:#14a37f;--code:#12132b}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:14px}
+nav{background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:28px;padding:14px 40px;position:sticky;top:0;z-index:5}
+.logo{display:flex;align-items:center;gap:9px;font-weight:800;font-size:17px}
+.logo i{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--pri),var(--acc));display:grid;place-items:center;color:#fff;font-style:normal;font-size:15px}
+nav a{color:var(--mute);text-decoration:none;font-weight:500;cursor:pointer;padding:6px 2px;border-bottom:2px solid transparent}
+nav a.on{color:var(--pri);border-color:var(--pri)}
+nav .sp{flex:1}
+.pill{font-size:12px;padding:5px 11px;border-radius:99px;background:#e8f7f2;color:var(--good);font-weight:600}
+.btn{background:var(--pri);color:#fff;border:0;border-radius:9px;padding:10px 18px;font-weight:600;cursor:pointer;font-family:inherit}
+.btn.o{background:#fff;color:var(--pri);border:1px solid var(--line)}
+main{max-width:1180px;margin:0 auto;padding:32px 40px 60px}
+section{display:none}section.on{display:block}
+.hero{display:grid;grid-template-columns:1.1fr 1fr;gap:32px;align-items:center;background:linear-gradient(120deg,#1b1a5c,#3d3bbf 60%,#6a4fd8);border-radius:20px;padding:40px;color:#fff;margin-bottom:24px}
+.hero h1{font-size:36px;line-height:1.1;margin:12px 0}
+.hero p{opacity:.85;line-height:1.6;max-width:460px}
+.tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:rgba(255,255,255,.14);padding:5px 10px;border-radius:6px}
+.hero .btns{display:flex;gap:10px;margin-top:20px}
+.hero .btn{background:var(--acc)}.hero .btn.o{background:transparent;color:#fff;border-color:rgba(255,255,255,.35)}
+pre,.mono{font-family:'JetBrains Mono',monospace;font-size:12.5px}
+.codebox{background:var(--code);border-radius:14px;padding:18px;color:#cfd2ff;box-shadow:0 20px 40px rgba(0,0,0,.25)}
+.codebox .h{display:flex;gap:6px;margin-bottom:12px;align-items:center;color:#8d90c0;font-size:12px}
+.codebox .h b{width:9px;height:9px;border-radius:50%;background:#ff5f57}.codebox .h b:nth-child(2){background:#febc2e}.codebox .h b:nth-child(3){background:#28c840}
+.k{color:#ff9f6b}.s{color:#9be29b}.n{color:#7cc7ff}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px}
+.stat small{color:var(--mute);font-weight:500;display:flex;justify-content:space-between}
+.stat .v{font-size:28px;font-weight:800;margin:8px 0 4px}
+.stat .v span{font-size:14px;color:var(--mute);font-weight:500}
+.chip{font-size:11px;font-weight:600;padding:3px 8px;border-radius:6px;background:#eeedfd;color:var(--pri)}
+.chip.or{background:#fff1e8;color:#d95f12}.chip.gr{background:#e6f6f1;color:var(--good)}
+h2{font-size:24px;margin-bottom:6px}h3{font-size:15px;margin-bottom:14px}
+.sub{color:var(--mute);margin-bottom:22px}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--acc);text-transform:uppercase;margin-bottom:6px}
+.zone{display:grid;grid-template-columns:150px 1fr 90px;align-items:center;gap:12px;margin:9px 0;font-size:13px}
+.bar{height:10px;border-radius:6px;background:#eef0f7;overflow:hidden}.bar i{display:block;height:100%;border-radius:6px}
+label{display:block;font-size:12px;font-weight:600;color:var(--mute);margin-bottom:5px}
+input,select,textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:9px;font-family:inherit;font-size:14px;background:#fafbff}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.f3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px}
+.seg{display:flex;gap:6px;margin-bottom:14px}.seg button{flex:1;padding:9px;border:1px solid var(--line);border-radius:9px;background:#fff;font-family:inherit;font-weight:600;color:var(--mute);cursor:pointer}
+.seg button.on{background:var(--pri);color:#fff;border-color:var(--pri)}
+.res{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px dashed var(--line)}
+.res b{font-size:18px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;color:var(--mute);font-weight:600;padding:9px 10px;border-bottom:1px solid var(--line);font-size:12px}
+td{padding:10px;border-bottom:1px solid var(--line)}
+.m{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;padding:3px 7px;border-radius:5px;background:#fff1e8;color:#d95f12}
+.m.get{background:#e6f6f1;color:var(--good)}
+.pg{display:grid;grid-template-columns:1fr 1fr;gap:0;background:var(--code);border-radius:16px;overflow:hidden}
+.pg>div{padding:20px}.pg>div+div{border-left:1px solid #26284d}
+.pg select,.pg textarea{background:#1b1c3d;border-color:#2c2e5a;color:#dfe1ff;font-family:'JetBrains Mono',monospace;font-size:12.5px}
+.pg label{color:#8d90c0}
+.pg pre{color:#cfd2ff;white-space:pre-wrap;min-height:330px}
+.status{font-size:12px;color:#7ee2b8;font-family:'JetBrains Mono',monospace}
+.ep{border:1px solid var(--line);border-radius:12px;margin-bottom:12px;background:#fff}
+.ep .t{display:flex;gap:12px;align-items:center;padding:14px 18px}
+.ep .t code{font-family:'JetBrains Mono',monospace;font-weight:600}
+.ep .t>span:last-child{color:var(--mute);margin-left:auto}
+.ep .b{border-top:1px solid var(--line);padding:14px 18px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.ep .b>div{min-width:0}.ep .b pre{white-space:pre-wrap;word-break:break-word;background:#f4f5fb;padding:12px;border-radius:9px;font-size:12px}
+.flow{display:flex;align-items:center;gap:14px;justify-content:center;margin:10px 0 24px}
+.node{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 20px;text-align:center;min-width:200px}
+.node.me{border:2px solid var(--pri);background:#f3f2ff}
+.arrow{font-size:12px;color:var(--mute);text-align:center}.arrow b{display:block;font-size:22px;color:var(--acc)}
+
+.grid5{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.summary{background:#fff;border:1px solid var(--line);border-left:5px solid var(--acc);border-radius:14px;padding:18px 22px;margin-bottom:24px;display:flex;gap:18px;align-items:center}
+.summary .ic{width:44px;height:44px;border-radius:12px;background:#fff1e8;display:grid;place-items:center;font-size:22px;flex:none}
+.summary p{font-size:15px;line-height:1.55}
+.zone.hl{background:#fff7f1;border-radius:8px;padding:4px 6px;margin-left:-6px;margin-right:-6px;font-weight:700}
+.zone.hl b{color:#d95f12}
+.meter{height:12px;border-radius:8px;background:linear-gradient(90deg,#a5b4fc,#6ee7b7,#fcd34d,#fb923c,#f43f5e);position:relative;margin:18px 0 8px}
+.meter i{position:absolute;top:-6px;width:4px;height:24px;background:var(--ink);border-radius:3px}
+.lvl{display:flex;gap:4px;margin-top:10px}.lvl span{flex:1;text-align:center;font-size:11px;padding:6px 0;border-radius:6px;background:#eef0f7;color:var(--mute);font-weight:600}
+.lvl span.on{background:var(--pri);color:#fff}
+.sec{font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--mute);text-transform:uppercase;margin:16px 0 4px}
+
+nav{gap:22px}
+.grid5{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.summary{background:#fff;border:1px solid var(--line);border-left:5px solid var(--acc);border-radius:14px;padding:18px 22px;margin-bottom:24px;display:flex;gap:18px;align-items:center}
+.summary .ic{width:44px;height:44px;border-radius:12px;background:#fff1e8;display:grid;place-items:center;font-size:22px;flex:none}
+.summary p{font-size:15px;line-height:1.55}
+.zone.hl{background:#fff7f1;border-radius:8px;padding:4px 6px;margin-left:-6px;margin-right:-6px;font-weight:700}
+.zone.hl b{color:#d95f12}
+.meter{height:12px;border-radius:8px;background:linear-gradient(90deg,#a5b4fc,#6ee7b7,#fcd34d,#fb923c,#f43f5e);position:relative;margin:18px 0 8px}
+.meter i{position:absolute;top:-6px;width:4px;height:24px;background:var(--ink);border-radius:3px}
+.meter.acwr{background:linear-gradient(90deg,#a5b4fc 0 32%,#6ee7b7 32% 52%,#fcd34d 52% 60%,#f43f5e 60%)}
+.scale{display:flex;justify-content:space-between;font-size:11px;color:var(--mute)}
+.lvl{display:flex;gap:4px;margin-top:10px}.lvl span{flex:1;text-align:center;font-size:11px;padding:6px 0;border-radius:6px;background:#eef0f7;color:var(--mute);font-weight:600}
+.lvl span.on{background:var(--pri);color:#fff}
+.sec{font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--mute);text-transform:uppercase;margin:16px 0 4px}
+.ring{width:150px;height:150px;border-radius:50%;display:grid;place-items:center;margin:6px auto 12px}
+.ring div{width:118px;height:118px;border-radius:50%;background:#fff;display:grid;place-items:center;text-align:center}
+.ring b{font-size:38px;line-height:1}.ring small{color:var(--mute);font-weight:600}
+.rec{background:#f3f2ff;border-radius:12px;padding:14px 16px;margin-top:12px}
+.rec b{color:var(--pri)}
+.flag{font-size:12.5px;color:#b4471a;background:#fff4ec;border-radius:8px;padding:8px 10px;margin-top:8px}
+.hbar{display:grid;grid-template-columns:90px 1fr 70px;gap:10px;align-items:center;margin:8px 0;font-size:13px}
+.sets td input{padding:6px 8px;font-size:13px}
+.sets td{padding:6px 6px}
+.x{background:none;border:0;color:var(--mute);cursor:pointer;font-size:16px}
+.modal{position:fixed;inset:0;background:rgba(20,22,50,.45);display:none;place-items:center;z-index:20}
+.modal.on{display:grid}
+.modal .card{width:440px;box-shadow:0 30px 60px rgba(0,0,0,.25)}
+.keybox{font-family:'JetBrains Mono',monospace;background:#12132b;color:#7ee2b8;padding:12px;border-radius:9px;margin:10px 0;word-break:break-all;font-size:13px}
+.grp{font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--acc);text-transform:uppercase;margin:22px 0 8px}
+</style>
+</head>
+<body>
+<nav>
+  <div class="logo"><i>⚡</i>FitMetrics</div>
+  <a data-s="dash" class="on">Dashboard</a><a data-s="calc">Workout Lab</a><a data-s="train">Training Load</a><a data-s="cardio">Cardio &amp; Pace</a><a data-s="str">Strength</a><a data-s="play">Playground</a><a data-s="docs">Docs</a><a data-s="intg">Integration</a>
+  <div class="sp"></div><span class="pill" id="health">● checking…</span><button class="btn" onclick="openKey()">Get API Key</button>
+</nav>
+<div class="modal" id="keyModal"><div class="card">
+  <h3>Get a free FitMetrics API key</h3><p class="sub" style="margin-bottom:14px">Keys are sent in the <code class="mono">X-API-Key</code> header · 60 requests/min.</p>
+  <div id="keyForm"><label>Name</label><input id="kName" value="Yasash S"><label style="margin-top:10px">Email</label><input id="kMail" value="yasash@vitstudent.ac.in">
+  <div id="kErr" style="color:#d0314a;font-size:13px;margin-top:8px"></div><div style="display:flex;gap:8px;margin-top:12px"><button class="btn" onclick="makeKey()">Generate key</button><button class="btn o" onclick="closeKey()">Cancel</button></div></div>
+  <div id="keyDone" style="display:none"><label>Your API key</label><div class="keybox" id="kOut"></div><p style="font-size:13px;color:var(--mute)">Saved in this browser — the website now uses your key.</p><button class="btn" style="margin-top:12px" onclick="closeKey()">Done</button></div>
+</div></div>
+<main>
+<div id="offline" style="display:none;background:#fff4ec;border:1px solid #ffb488;border-radius:14px;padding:16px 20px;margin-bottom:22px;font-size:14px;line-height:1.6">
+  <b style="color:#d95f12">The FitMetrics backend isn't reachable.</b> The website needs the Python API running.<br>
+  Start it with <b>start_windows.bat</b> (double-click) or <code class="mono">python run.py</code> in the project folder, then open <code class="mono">http://localhost:8000</code>.
+  <span style="color:var(--mute)">Trying: <code class="mono" id="apiUrl"></code></span>
+</div>
+<!-- DASHBOARD -->
+<section id="dash" class="on">
+  <div class="hero">
+    <div><span class="tag">Workout Performance & Training Analytics API</span>
+      <h1>Know what every<br>workout really did.</h1>
+      <p>FitMetrics turns workouts into calories, intensity, training load, recovery, injury risk, readiness, race predictions and strength levels — all delivered as secure REST APIs.</p>
+      <div class="btns"><button class="btn" onclick="go('play')">Try the API</button><button class="btn o" onclick="go('docs')">Read the docs</button></div></div>
+    <div class="codebox"><div class="h"><b></b><b></b><b></b>&nbsp; POST /api/v1/metrics/workout-analysis</div>
+<pre><span style="color:#8d90c0">X-API-Key: fm_••••••••</span>
+{ <span class="k">"activity"</span>: <span class="s">"running"</span>, <span class="k">"duration"</span>: <span class="n">45</span>, <span class="k">"avgHr"</span>: <span class="n">172</span> }
+<span style="color:#7ee2b8">200 OK · 41 ms</span>
+{
+  <span class="k">"caloriesBurned"</span>: <span class="n" id="hK">—</span>,
+  <span class="k">"zone"</span>: <span class="s" id="hZ">—</span>,
+  <span class="k">"trainingLoad"</span>: <span class="n" id="hL">—</span>,
+  <span class="k">"recoveryHours"</span>: <span class="n" id="hR">—</span>
+}</pre></div>
+  </div>
+  <div class="summary"><div class="ic">🏃</div><div><div class="eyebrow" style="margin:0 0 4px">Latest workout analysis</div><p id="dSum">—</p></div></div>
+  <div class="grid5">
+    <div class="card stat"><small>Calories Burned <span class="chip or">Running</span></small><div class="v" id="dK">—<span> kcal</span></div><small id="dKm">—</small></div>
+    <div class="card stat"><small>Workout Intensity <span class="chip or" id="dIl">—</span></small><div class="v" id="dI">—<span> %HRR</span></div><small id="dIz">—</small></div>
+    <div class="card stat"><small>Readiness Today <span class="chip gr" id="dRs">—</span></small><div class="v" id="dR">—<span> /100</span></div><small id="dRr">—</small></div>
+    <div class="card stat"><small>Training Balance <span class="chip" id="dAz">—</span></small><div class="v" id="dA">—<span> ACWR</span></div><small id="dAr">—</small></div>
+  </div>
+  <div class="grid2">
+    <div class="card"><h3>Heart-Rate Zones <span class="chip" style="float:right">avg HR 172 highlighted</span></h3><div id="dZones"></div></div>
+    <div class="card"><h3>This Week's Sessions</h3>
+      <table><tr><th>Activity</th><th>Duration</th><th>Avg HR</th><th>Zone</th><th>Load</th><th>Burned</th></tr><tbody id="dLog"></tbody></table>
+      <div class="res" style="border:0;margin-top:6px"><span>Weekly training load</span><b id="dLogT">—</b></div></div>
+  </div>
+</section>
+
+<!-- WORKOUT LAB -->
+<section id="calc">
+  <div class="eyebrow">Workout Lab</div><h2>Analyse a workout</h2><p class="sub">Every result comes from a live call to <code class="mono">/metrics/workout-analysis</code> — download it as a PDF report.</p>
+  <div class="grid2">
+    <div class="card">
+      <h3>Session</h3>
+      <div class="f3"><div><label>Activity</label><select id="cAct"><option value="running">Running</option><option value="cycling">Cycling</option><option value="swimming">Swimming</option><option value="hiit">HIIT</option><option value="football">Football</option><option value="badminton">Badminton</option><option value="weight_training">Weight training</option></select></div><div><label>Duration (min)</label><input id="cD" value="45"></div><div><label>Climate</label><select id="cCl"><option value="normal">Normal</option><option value="hot">Hot</option></select></div></div>
+      <div class="f3"><div><label>Avg HR (bpm)</label><input id="cHr" value="172"></div><div><label>Resting HR</label><input id="cRhr" value="62"></div><div><label>Age</label><input id="cA" value="21"></div></div>
+      <div class="f3"><div><label>Body weight (kg)</label><input id="cW" value="74"></div><div><label>Gender</label><select id="cG"><option value="male">Male</option><option value="female">Female</option></select></div><div><label>Athlete name</label><input id="cN" value="Yasash S"></div></div>
+      <div style="display:flex;gap:10px;margin-top:6px"><button class="btn" style="flex:1" onclick="calc()">Analyse workout</button><button class="btn o" style="flex:1" onclick="pdf()">⬇ Download PDF report</button></div>
+    </div>
+    <div class="card"><h3>Results <span class="chip gr" style="float:right">Live from API</span></h3><div id="cOut"></div></div>
+  </div>
+</section>
+
+<!-- TRAINING LOAD -->
+<section id="train">
+  <div class="eyebrow">Training management</div><h2>Training load, injury risk & readiness</h2><p class="sub">Acute:Chronic Workload Ratio from the last 28 days of training load, plus today's readiness and session recommendation.</p>
+  <div class="grid2" style="grid-template-columns:1.35fr 1fr">
+    <div class="card"><h3>Last 28 days of training load <span class="chip" style="float:right">TRIMP per day</span></h3>
+      <svg id="tChart" viewBox="0 0 600 190" style="width:100%;height:190px"></svg>
+      <div style="display:flex;gap:18px;font-size:12px;color:var(--mute);margin-top:4px"><span><b style="color:#a9a6f2">■</b> earlier days</span><span><b style="color:#ff7a2f">■</b> last 7 days (acute)</span><span><b style="color:#3d3bbf">- - -</b> 28-day avg (chronic)</span><span><b style="color:#d95f12">—</b> 7-day avg (acute)</span></div>
+      <div class="meter acwr"><i id="tPin" style="left:50%"></i></div><div class="scale" style="position:relative;height:14px"><span style="position:absolute;left:0">0.0</span><span style="position:absolute;left:32%;transform:translateX(-50%)">0.8</span><span style="position:absolute;left:52%;transform:translateX(-50%)">1.3</span><span style="position:absolute;left:60%;transform:translateX(-50%)">1.5</span><span style="position:absolute;right:0">2.5</span></div>
+      <div class="grid3" style="margin-top:16px">
+        <div><label>ACWR</label><b style="font-size:26px" id="tAc">—</b> <span class="chip" id="tZ">—</span></div>
+        <div><label>Acute / Chronic</label><b style="font-size:18px" id="tAcu">—</b></div>
+        <div><label>Monotony · Strain</label><b style="font-size:18px" id="tMon">—</b></div>
+      </div>
+      <div class="rec" id="tAdv">—</div>
+      <button class="btn o" style="margin-top:14px" onclick="randomLoads()">Simulate a load spike</button>
+    </div>
+    <div class="card"><h3>Readiness check</h3>
+      <div class="f2"><div><label>Last session load</label><input id="rL" value="121"></div><div><label>Hours since</label><input id="rH" value="40"></div></div>
+      <div class="f2"><div><label>Resting HR today</label><input id="rR" value="61"></div><div><label>Baseline resting HR</label><input id="rB" value="62"></div></div>
+      <div class="f2"><div><label>Sleep (h)</label><input id="rS" value="7.5"></div><div><label>Soreness (1–5)</label><input id="rSo" value="2"></div></div>
+      <button class="btn" style="width:100%" onclick="ready()">Check readiness</button>
+      <div class="ring" id="rRing"><div><span><b id="rScore">—</b><br><small id="rStat">—</small></span></div></div>
+      <div id="rBreak"></div><div class="rec" id="rRec">—</div><div id="rFlags"></div>
+    </div>
+  </div>
+</section>
+
+<!-- CARDIO -->
+<section id="cardio">
+  <div class="eyebrow">Cardio</div><h2>Pace analysis & VO₂max</h2><p class="sub">Race-time predictions with the Riegel model and cardio fitness from heart-rate data or a Cooper test.</p>
+  <div class="grid2">
+    <div class="card"><h3>Pace & race predictor</h3>
+      <div class="f3"><div><label>Activity</label><select id="pA"><option value="running">Running</option><option value="cycling">Cycling</option></select></div><div><label>Distance (km)</label><input id="pD" value="5"></div><div><label>Time (min)</label><input id="pT" value="25"></div></div>
+      <button class="btn" style="width:100%" onclick="paceCalc()">Analyse pace</button>
+      <div class="grid3" style="margin:18px 0 6px"><div><label>Pace</label><b style="font-size:24px" id="pP">—</b><small style="color:var(--mute)"> /km</small></div><div><label>Speed</label><b style="font-size:24px" id="pS">—</b><small style="color:var(--mute)"> km/h</small></div><div><label>Model</label><small id="pM" class="mono">—</small></div></div>
+      <table><tr><th>Predicted distance</th><th>Finish time</th><th>Pace /km</th></tr><tbody id="pTab"></tbody></table>
+    </div>
+    <div class="card"><h3>VO₂max & fitness age</h3>
+      <div class="f3"><div><label>Age</label><input id="vA" value="21"></div><div><label>Gender</label><select id="vG"><option value="male">Male</option><option value="female">Female</option></select></div><div><label>Resting HR</label><input id="vR" value="62"></div></div>
+      <div class="f2"><div><label>Measured max HR (optional)</label><input id="vM" placeholder="auto"></div><div><label>Cooper 12-min distance m (optional)</label><input id="vC" placeholder="—"></div></div>
+      <button class="btn" style="width:100%" onclick="vo2()">Estimate VO₂max</button>
+      <div style="text-align:center;margin:18px 0 4px"><b style="font-size:44px" id="vV">—</b> <span style="color:var(--mute)">ml/kg/min</span><br><span class="chip gr" id="vRt" style="font-size:13px">—</span></div>
+      <div class="lvl" id="vLvl"></div>
+      <div class="res"><span>Fitness age</span><b id="vFa">—</b></div><div class="res"><span>Next rating at</span><b id="vN">—</b></div><div class="res" style="border:0"><span>Method</span><b id="vMe" style="font-size:13px">—</b></div>
+    </div>
+  </div>
+</section>
+
+<!-- STRENGTH -->
+<section id="str">
+  <div class="eyebrow">Strength</div><h2>Strength analysis & session volume</h2><p class="sub">Estimate 1RM and strength level from one set, or log a full gym session to get volume, intensity and muscle-group breakdown.</p>
+  <div class="grid2" style="grid-template-columns:1fr 1.3fr">
+    <div class="card"><h3>1RM & strength level</h3>
+      <div class="f2"><div><label>Exercise</label><select id="sEx"><option value="bench_press">Bench press</option><option value="squat">Squat</option><option value="deadlift">Deadlift</option><option value="overhead_press">Overhead press</option></select></div><div><label>Bodyweight (kg)</label><input id="sBw" value="74"></div></div>
+      <div class="f2"><div><label>Weight (kg)</label><input id="sW" value="80"></div><div><label>Reps</label><input id="sR" value="6"></div></div>
+      <button class="btn" style="width:100%" onclick="lift()">Analyse lift</button>
+      <div style="text-align:center;margin:18px 0 4px"><label>Estimated 1RM</label><b style="font-size:40px" id="s1">—</b> <span style="color:var(--mute)">kg</span></div>
+      <div class="lvl" id="sLvl"></div>
+      <div id="sOut" style="margin-top:8px"></div>
+    </div>
+    <div class="card"><h3>Session volume <span class="chip" style="float:right">/metrics/session-volume</span></h3>
+      <table class="sets"><tr><th>Exercise</th><th>Weight (kg)</th><th>Reps</th><th></th></tr><tbody id="vSets"></tbody></table>
+      <div style="display:flex;gap:8px;margin:10px 0 4px"><button class="btn o" onclick="addSet()">+ Add set</button><button class="btn" onclick="volume()">Analyse session</button></div>
+      <div class="grid3" style="margin-top:14px"><div><label>Total volume</label><b style="font-size:22px" id="vVol">—</b></div><div><label>Avg intensity</label><b style="font-size:22px" id="vInt">—</b></div><div><label>Est. calories</label><b style="font-size:22px" id="vK">—</b></div></div>
+      <div class="sec">Muscle groups (sets)</div><div id="vMus"></div>
+    </div>
+  </div>
+</section>
+
+<!-- PLAYGROUND -->
+<section id="play">
+  <div class="eyebrow">Developer tools</div><h2>API Playground</h2><p class="sub">Pick an endpoint, edit the JSON body and send an authenticated request to FitMetrics.</p>
+  <div class="pg">
+    <div><label>Endpoint</label><select id="pEp" onchange="fillBody()"></select>
+      <label style="margin-top:12px">Header · X-API-Key</label><input id="pKey" class="mono">
+      <label style="margin-top:12px">Request body (JSON)</label><textarea id="pBody" rows="13"></textarea>
+      <button class="btn" style="margin-top:14px;background:var(--acc)" onclick="send()">Send request ▶</button></div>
+    <div><label>Response <span class="status" id="pStat" style="float:right"></span></label><pre id="pOut">// response will appear here</pre></div>
+  </div>
+</section>
+
+<!-- DOCS -->
+<section id="docs">
+  <div class="eyebrow">Reference</div><h2>API Documentation</h2><p class="sub">Base URL <code class="mono">https://fitmetrics-api.onrender.com/api/v1</code> · Auth: <code class="mono">X-API-Key</code> header · Responses use <code class="mono">{ success, data }</code> · Interactive Swagger at <code class="mono">/docs</code></p>
+  <div id="dList"></div>
+  <div class="card" style="margin-top:20px"><h3>Error responses</h3><table><tr><th>Code</th><th>Meaning</th><th>Example body</th></tr>
+    <tr><td><b>400</b></td><td>Invalid business input</td><td class="mono">{"success":false,"error":"unknown activity 'chess' ..."}</td></tr>
+    <tr><td><b>401</b></td><td>Missing or invalid API key</td><td class="mono">{"success":false,"error":"invalid API key"}</td></tr>
+    <tr><td><b>422</b></td><td>Schema validation failed</td><td class="mono">{"success":false,"error":"validation failed","details":[...]}</td></tr>
+    <tr><td><b>429</b></td><td>Rate limit exceeded (60/min free, 300/min partner)</td><td class="mono">{"success":false,"error":"rate limit of 60 requests/min exceeded ..."}</td></tr>
+    <tr><td><b>503</b></td><td>Partner FitPulse unavailable (energy-balance)</td><td class="mono">{"success":false,"error":"FitPulse service unavailable ..."}</td></tr></table></div>
+</section>
+
+<!-- INTEGRATION -->
+<section id="intg">
+  <div class="eyebrow">Service-to-service</div><h2>Partner Integration</h2><p class="sub">FitPulse (23MIC0052) answers <b>“how much energy does this person need?”</b> — FitMetrics (23MIC0060) answers <b>“what did this workout actually do?”</b></p>
+  <div class="flow">
+    <div class="node"><b>FitPulse API</b><br><small style="color:var(--mute)">23MIC0052 · energy needs</small></div>
+    <div class="arrow">POST /fitness/calories<b>⇄</b>JSON</div>
+    <div class="node me"><b>FitMetrics API</b><br><small style="color:var(--mute)">23MIC0060 · workout analytics</small></div>
+    <div class="arrow">POST /metrics/* + partner key<b>⇄</b>JSON</div>
+    <div class="node"><b>Progress Manager</b><br><small style="color:var(--mute)">23MIC0052 · progress tracking</small></div>
+  </div>
+  <div class="grid2">
+    <div class="card"><h3>Consumed by FitMetrics <span class="chip or" style="float:right">Inbound data</span></h3>
+      <div class="res"><span>Partner endpoint</span><b class="mono" style="font-size:13px">POST /fitness/calories</b></div>
+      <div class="res"><span>Used for</span><b style="font-size:14px">Maintenance calories in energy balance</b></div>
+      <div class="res"><span>Maintenance (from FitPulse)</span><b id="iMaint">—</b></div>
+      <div class="res"><span>Exercise (from FitMetrics)</span><b id="iEx">—</b></div>
+      <div class="res"><span>Net energy balance</span><b id="iNet">—</b></div></div>
+    <div class="card"><h3>Provided to partner <span class="chip gr" style="float:right">Partner key · 300 req/min</span></h3>
+      <table><tr><th>Partner feature</th><th>FitMetrics endpoint</th></tr>
+      <tr><td>Workout log entry</td><td class="mono">/metrics/workout-analysis</td></tr>
+      <tr><td>Injury-risk alerts on progress page</td><td class="mono">/metrics/training-balance</td></tr>
+      <tr><td>Daily plan suggestion</td><td class="mono">/metrics/readiness</td></tr>
+      <tr><td>Strength progress charts</td><td class="mono">/metrics/strength-analysis</td></tr>
+      <tr><td>Gym session logging</td><td class="mono">/metrics/session-volume</td></tr>
+      <tr><td>Running progress (pace)</td><td class="mono">/metrics/pace</td></tr></table></div>
+  </div>
+</section>
+</main>
+<script>
+// API location: ?api=… override, otherwise the same server that served this page
+const API = new URLSearchParams(location.search).get('api')
+  || (location.protocol.startsWith('http') ? location.origin + '/api/v1'   // same server serves site + API (local, Vercel, Render)
+  : 'http://localhost:8000/api/v1');
+const DEMO = 'fm_demo_public_key';
+const $ = id => document.getElementById(id);
+const store = {get(){try{return localStorage.getItem('fm_key')||null}catch(e){return null}}, set(v){try{v?localStorage.setItem('fm_key',v):localStorage.removeItem('fm_key')}catch(e){}}};
+let KEY = store.get() || DEMO;
+const hdr = () => ({'Content-Type':'application/json','X-API-Key':KEY});
+async function post(p, b, retried){
+  let r; const used = KEY;
+  try { r = await fetch(API + p, {method:'POST', headers:hdr(), body:JSON.stringify(b)}); }
+  catch(e){ offline(true); return {success:false, error:'Cannot reach the FitMetrics API at '+API}; }
+  if(r.status===401 && used!==DEMO && !retried){ resetKey(); return post(p,b,true); }  // stale saved key → fall back to demo key
+  try { return await r.json(); } catch(e){ return {success:false, error:'Unexpected response ('+r.status+')'}; }
+}
+function errText(r){return r.details?r.details.map(d=>`${d.field||'input'}: ${d.message}`).join('<br>'):(r.error||'Request failed')}
+function resetKey(){ KEY=DEMO; store.set(''); const k=$('pKey'); if(k) k.value=DEMO; health(); }
+async function checkKey(){ if(KEY===DEMO) return; try{ const r=await fetch(API+'/keys/me',{headers:{'X-API-Key':KEY}}); if(r.status===401) resetKey(); }catch(e){} }
+function offline(on){ const o=$('offline'); if(o) o.style.display=on?'block':'none'; }
+async function safe(fn){ try{ await fn(); } catch(e){ console.warn(fn.name, e); } }
+const v = id => +$(id).value;
+const RUN = {activity:'running',duration:45,weight:74,age:21,restingHr:62,avgHr:172};
+const LOADS = [55,0,70,0,60,85,0, 60,0,75,0,65,90,0, 65,0,80,0,70,95,0, 121,0,68,0,47,95,0];
+let loads = LOADS.slice();
+let SETS = [['bench_press',80,6],['bench_press',80,6],['bench_press',75,8],['barbell_row',60,10],['barbell_row',60,10],['squat',100,5],['squat',100,5],['bicep_curl',14,12]];
+const EPS = {
+ '/metrics/workout-analysis': {g:'Workout',d:'Full workout report: calories, zone, load, recovery, fluids', b:RUN},
+ '/metrics/workout-intensity': {g:'Workout',d:'%HRR, zone, intensity label and TRIMP load', b:{age:21,restingHr:62,avgHr:150,duration:40}},
+ '/metrics/calories-burned': {g:'Workout',d:'Calories burned for an activity (MET)', b:{activity:'running',duration:45,weight:74}},
+ '/metrics/heart-rate-zones': {g:'Workout',d:'5 Karvonen heart-rate zones', b:{age:21,restingHr:62}},
+ '/metrics/hydration': {g:'Workout',d:'Post-workout fluid replacement plan', b:{weight:74,duration:45,intensity:'high',climate:'normal'}},
+ '/metrics/training-balance': {g:'Training management',d:'ACWR injury risk, monotony & strain (28 daily loads)', b:{dailyLoads:LOADS}},
+ '/metrics/readiness': {g:'Training management',d:'Readiness score + today\'s session recommendation', b:{lastLoad:121,hoursSince:40,restingHr:61,baselineRestingHr:62,sleepHours:7.5,soreness:2}},
+ '/metrics/pace': {g:'Cardio',d:'Pace, speed and Riegel race predictions', b:{activity:'running',distance:5,duration:25}},
+ '/metrics/vo2max': {g:'Cardio',d:'VO2max estimate, rating and fitness age', b:{age:21,gender:'male',restingHr:62}},
+ '/metrics/strength-analysis': {g:'Strength',d:'1RM, training loads, rep targets, strength level', b:{exercise:'bench_press',weight:80,reps:6,bodyweight:74}},
+ '/metrics/session-volume': {g:'Strength',d:'Gym session volume, intensity and muscle groups', b:{bodyweight:74,sets:[{exercise:'bench_press',weight:80,reps:6},{exercise:'squat',weight:100,reps:5}]}},
+ '/metrics/energy-balance': {g:'Partner integration',d:'Net calories — maintenance from FitPulse API', b:{age:21,gender:'male',height:178,weight:74,activityLevel:'moderate',caloriesEaten:2300,workouts:[{activity:'running',duration:45,weight:74}]}},
+ '/reports/workout': {g:'Reports & keys',d:'Download a PDF workout report (application/pdf)', b:{...RUN,athlete:'Yasash S',strength:{exercise:'bench_press',weight:80,reps:6}}},
+ '/keys': {g:'Reports & keys',d:'Issue a free API key (public — no key needed)', b:{name:'Yasash S',email:'yasash@vitstudent.ac.in'}},
+};
+function go(s){document.querySelectorAll('nav a').forEach(a=>a.classList.toggle('on',a.dataset.s==s));document.querySelectorAll('section').forEach(x=>x.classList.toggle('on',x.id==s));}
+document.querySelectorAll('nav a').forEach(a=>a.onclick=()=>go(a.dataset.s));
+const row=(k,val,c='')=>`<div class="res"><span>${k}</span><b>${val} ${c}</b></div>`;
+const ZC=['#a5b4fc','#6ee7b7','#fcd34d','#fb923c','#f43f5e'];
+function zonesHtml(z,max,hr){return z.map((r,i)=>`<div class="zone ${hr>=r.min&&hr<r.max?'hl':''}"><span>${r.zone}</span><div class="bar"><i style="width:${r.max/max*100}%;background:${ZC[i]}"></i></div><b>${r.min}–${r.max}</b></div>`).join('')}
+function keyLabel(){return KEY==DEMO?'demo key':'your key'}
+// ---------- API key modal
+function openKey(){$('keyModal').classList.add('on');$('keyForm').style.display='';$('keyDone').style.display='none'}
+function closeKey(){$('keyModal').classList.remove('on')}
+async function makeKey(){let r;try{r=await fetch(API+'/keys',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:$('kName').value,email:$('kMail').value})}).then(r=>r.json())}catch(e){r={success:false,error:'API is offline — start the backend first.'}}
+  if(!r.success&&r.details){r.error=r.details.map(d=>d.field+': '+d.message).join(', ')}
+  if(!r.success){$('kErr').textContent=r.error||'Could not create key';return}$('kErr').textContent='';KEY=r.data.apiKey;store.set(KEY);$('kOut').textContent=KEY;$('keyForm').style.display='none';$('keyDone').style.display='';$('pKey').value=KEY;health()}
+function alertBox(t){$('kOut').textContent=t}
+function health(){return fetch(API+'/health').then(r=>r.json()).then(()=>{offline(false);$('health').textContent='● API online · '+keyLabel();$('health').style.cssText='';return true})
+  .catch(()=>{offline(true);$('health').textContent='● API offline';$('health').style.cssText='background:#fdecee;color:#d0314a';return false})}
+// ---------- dashboard
+async function dash(){
+  health();
+  const a=(await post('/metrics/workout-analysis',RUN)).data;
+  $('hK').textContent=a.caloriesBurned;$('hZ').textContent='"'+a.zone+'"';$('hL').textContent=a.trainingLoad;$('hR').textContent=a.recoveryHours;
+  $('dSum').textContent=a.summary;
+  $('dK').innerHTML=a.caloriesBurned+'<span> kcal</span>';$('dKm').textContent=a.caloriesPerMin+' kcal/min · 45 min';
+  $('dI').innerHTML=a.percentHrr+'<span> %HRR</span>';$('dIl').textContent=a.intensity;$('dIz').textContent=a.zone+' · load '+a.trainingLoad;
+  const r=(await post('/metrics/readiness',EPS['/metrics/readiness'].b)).data;
+  $('dR').innerHTML=r.readinessScore+'<span> /100</span>';$('dRs').textContent=r.status;$('dRr').textContent=r.recommendation.type+' · '+r.recommendation.zone;
+  const t=(await post('/metrics/training-balance',{dailyLoads:LOADS})).data;
+  $('dA').innerHTML=t.acwr+'<span> ACWR</span>';$('dAz').textContent=t.zone;$('dAr').textContent='Injury risk: '+t.injuryRisk;
+  const z=(await post('/metrics/heart-rate-zones',{age:21,restingHr:62})).data;$('dZones').innerHTML=zonesHtml(z.zones,z.maxHr,172)+`<p style="color:var(--mute);font-size:12px;margin-top:10px">Max HR ${z.maxHr} bpm (Tanaka) · Heart-rate reserve ${z.heartRateReserve} bpm (Karvonen)</p>`;
+  const log=[['running',45,172],['cycling',60,138],['hiit',20,180],['swimming',30,150]];let tot=0,rows='';
+  for(const [ac,d,hr] of log){const w=(await post('/metrics/workout-analysis',{...RUN,activity:ac,duration:d,avgHr:hr})).data;tot+=w.trainingLoad;rows+=`<tr><td>${ac}</td><td>${d} min</td><td>${hr}</td><td><span class="chip ${w.intensity=='High'||w.intensity=='Maximal'?'or':''}">${w.zone.split(' ·')[0]}</span></td><td>${w.trainingLoad}</td><td><b>${w.caloriesBurned} kcal</b></td></tr>`}
+  $('dLog').innerHTML=rows;$('dLogT').textContent=tot+' TRIMP';
+  const e=await post('/metrics/energy-balance',EPS['/metrics/energy-balance'].b);
+  if(e.success){$('iMaint').textContent=e.data.maintenanceCalories+' kcal/day';$('iEx').textContent=e.data.exerciseCalories+' kcal';$('iNet').textContent=e.data.netBalance+' kcal ('+e.data.status+')';}
+  else{$('iMaint').textContent='FitPulse unavailable (503)';}
+}
+// ---------- workout lab
+function wBody(){return {activity:$('cAct').value,duration:v('cD'),weight:v('cW'),age:v('cA'),restingHr:v('cRhr'),avgHr:v('cHr'),gender:$('cG').value,climate:$('cCl').value}}
+async function calc(){
+  const w=await post('/metrics/workout-analysis',wBody());
+  if(!w.success){$('cOut').innerHTML=`<div class="flag">${errText(w)}</div>`;return}
+  const a=w.data;
+  $('cOut').innerHTML=`<div class="rec" style="margin:0 0 6px">${a.summary}</div>`+row('Calories burned',a.caloriesBurned+' kcal',`<span class="chip">${a.caloriesPerMin}/min</span>`)+
+   `<div class="meter"><i style="left:${a.percentHrr}%"></i></div><div class="res" style="padding-top:4px"><span>Intensity</span><b>${a.percentHrr}% HRR <span class="chip or">${a.zone}</span></b></div>`+
+   row('Training load',a.trainingLoad+' TRIMP',`<span class="chip">${a.loadRating}</span>`)+row('Recovery time','~'+a.recoveryHours+' h')+
+   row('Sweat loss / drink',a.hydration.sweatLossLitres+' L / '+a.hydration.drinkLitres+' L',`<span class="chip">${a.hydration.electrolytes?'+ electrolytes':'water'}</span>`);
+}
+async function pdf(){let r;try{r=await fetch(API+'/reports/workout',{method:'POST',headers:hdr(),body:JSON.stringify({...wBody(),athlete:$('cN').value})})}catch(e){offline(true);return}
+  if(!r.ok){const j=await r.json().catch(()=>({}));$('cOut').insertAdjacentHTML('afterbegin',`<div class="flag">PDF failed: ${j.error||r.status}</div>`);return}
+  const b=await r.blob();const u=URL.createObjectURL(b);const l=document.createElement('a');l.href=u;l.download='fitmetrics-workout-report.pdf';l.click()}
+// ---------- training load
+function chart(t){const W=600,H=170,bw=W/28,mx=Math.max(...loads,1);let s='';
+  loads.forEach((x,i)=>{const h=x/mx*(H-20);s+=`<rect x="${i*bw+3}" y="${H-h}" width="${bw-6}" height="${h}" rx="3" fill="${i>=21?'#ff7a2f':'#a9a6f2'}"/>`});
+  const cy=H-t.chronicLoad/mx*(H-20),ay=H-t.acuteLoad/mx*(H-20);
+  s+=`<line x1="0" x2="${W}" y1="${cy}" y2="${cy}" stroke="#3d3bbf" stroke-dasharray="5 4"/>`;
+  s+=`<line x1="${21*bw}" x2="${W}" y1="${ay}" y2="${ay}" stroke="#d95f12" stroke-width="2"/>`;
+  ['Week 1','Week 2','Week 3','This week'].forEach((w,i)=>s+=`<text x="${i*7*bw+7*bw/2}" y="186" font-size="11" text-anchor="middle" fill="#6b6f8e">${w} · ${t.weeklyLoads[i]}</text>`);
+  $('tChart').innerHTML=s}
+async function balance(){const r=await post('/metrics/training-balance',{dailyLoads:loads});if(!r.success){$('tAdv').innerHTML=`<span style="color:#d0314a">${errText(r)}</span>`;return}const t=r.data;chart(t);
+  $('tPin').style.left=Math.min(t.acwr/2.5*100,99)+'%';$('tAc').textContent=t.acwr;$('tZ').textContent=t.zone;$('tZ').className='chip '+(t.injuryRisk=='High'?'or':t.injuryRisk=='Moderate'?'or':'gr');
+  $('tAcu').textContent=t.acuteLoad+' / '+t.chronicLoad;$('tMon').textContent=(t.monotony??'—')+' · '+(t.strain??'—');
+  $('tAdv').innerHTML=`<b>Injury risk: ${t.injuryRisk}.</b> ${t.advice} Week-on-week change ${t.weekChangePct}%.`}
+function randomLoads(){loads=LOADS.slice(0,21).concat([150,120,160,0,170,140,130]);balance()}
+async function ready(){const res=await post('/metrics/readiness',{lastLoad:v('rL'),hoursSince:v('rH'),restingHr:v('rR'),baselineRestingHr:v('rB'),sleepHours:v('rS'),soreness:v('rSo')});
+  if(!res.success){$('rRec').innerHTML=`<span style="color:#d0314a">${errText(res)}</span>`;return}const r=res.data;
+  const c=r.readinessScore>=80?'#14a37f':r.readinessScore>=60?'#5b58e6':r.readinessScore>=40?'#fb923c':'#f43f5e';
+  $('rRing').style.background=`conic-gradient(${c} ${r.readinessScore*3.6}deg,#eef0f7 0)`;$('rScore').textContent=r.readinessScore;$('rStat').textContent=r.status;
+  const B=r.breakdown;$('rBreak').innerHTML=[['Recovery',B.recovery,50],['Heart rate',B.heartRate,25],['Sleep',B.sleep,15],['Soreness',B.soreness,10]].map(([k,x,m])=>`<div class="hbar"><span>${k}</span><div class="bar"><i style="width:${x/m*100}%;background:var(--pri2)"></i></div><b>${x}/${m}</b></div>`).join('');
+  $('rRec').innerHTML=`<b>Today: ${r.recommendation.type}</b> — ${r.recommendation.zone}, ${r.recommendation.durationMin} min`;
+  $('rFlags').innerHTML=r.flags.map(f=>`<div class="flag">⚠ ${f}</div>`).join('')}
+// ---------- cardio
+async function paceCalc(){const r=await post('/metrics/pace',{activity:$('pA').value,distance:v('pD'),duration:v('pT')});
+  if(!r.success){$('pTab').innerHTML=`<tr><td colspan=3><div class="flag">${errText(r)}</div></td></tr>`;return}const p=r.data;
+  $('pP').textContent=p.paceMinPerKm;$('pS').textContent=p.speedKmh;$('pM').textContent='Riegel ^1.06';
+  $('pTab').innerHTML=Object.entries(p.predictions||{}).map(([k,x])=>`<tr><td><b>${k}</b></td><td>${x.time}</td><td>${x.paceMinPerKm}</td></tr>`).join('')}
+async function vo2(){const b={age:v('vA'),gender:$('vG').value,restingHr:v('vR')};if($('vM').value)b.maxHr=v('vM');if($('vC').value)b.cooperDistance=v('vC');
+  const r=await post('/metrics/vo2max',b);if(!r.success){$('vMe').innerHTML=`<span style="color:#d0314a">${errText(r)}</span>`;return}const x=r.data;
+  $('vV').textContent=x.vo2max;$('vRt').textContent=x.rating;$('vFa').textContent=x.fitnessAge+' yrs';$('vN').textContent=x.nextRating?x.nextRating+' at '+x.nextRatingAt:'Top rating';$('vMe').textContent=x.method;
+  $('vLvl').innerHTML=['Poor','Fair','Good','Excellent','Superior'].map(l=>`<span class="${l==x.rating?'on':''}">${l}</span>`).join('')}
+// ---------- strength
+async function lift(){const r=await post('/metrics/strength-analysis',{exercise:$('sEx').value,weight:v('sW'),reps:v('sR'),bodyweight:v('sBw')});if(!r.success){$('sOut').innerHTML=`<div class="flag">${errText(r)}</div>`;return}const t=r.data;
+  $('s1').textContent=t.oneRepMax;$('sLvl').innerHTML=['Beginner','Novice','Intermediate','Advanced','Elite'].map(l=>`<span class="${l==t.strengthLevel?'on':''}">${l}</span>`).join('');
+  $('sOut').innerHTML=row('Relative strength',t.relativeStrength+'× BW')+row('Next level',t.nextLevel?t.nextLevel+' at '+t.nextLevelAt+' kg':'—')+row('Strength (3-5 reps)',t.repTargets['strength (3-5 reps)']+' kg')+row('Hypertrophy (8-12)',t.repTargets['hypertrophy (8-12 reps)']+' kg')+row('Endurance (15+)',t.repTargets['endurance (15+ reps)']+' kg')}
+function drawSets(){$('vSets').innerHTML=SETS.map((s,i)=>`<tr><td><input value="${s[0]}" onchange="SETS[${i}][0]=this.value"></td><td><input value="${s[1]}" onchange="SETS[${i}][1]=+this.value"></td><td><input value="${s[2]}" onchange="SETS[${i}][2]=+this.value"></td><td><button class="x" onclick="SETS.splice(${i},1);drawSets()">✕</button></td></tr>`).join('')}
+function addSet(){SETS.push(['overhead_press',40,8]);drawSets()}
+async function volume(){const r=await post('/metrics/session-volume',{bodyweight:74,sets:SETS.map(s=>({exercise:s[0],weight:s[1],reps:s[2]}))});if(!r.success){$('vMus').innerHTML=`<div class="flag">${errText(r)}</div>`;return}const d=r.data;
+  $('vVol').textContent=d.totalVolumeKg.toLocaleString()+' kg';$('vInt').textContent=d.avgIntensityPct+'%';$('vK').textContent=d.estimatedCalories+' kcal';
+  const mx=Math.max(...Object.values(d.muscleGroups).map(m=>m.sets));
+  $('vMus').innerHTML=Object.entries(d.muscleGroups).map(([k,m])=>`<div class="hbar"><span style="text-transform:capitalize">${k}</span><div class="bar"><i style="width:${m.sets/mx*100}%;background:var(--acc)"></i></div><b>${m.sets} set${m.sets>1?"s":""}</b></div>`).join('')+`<p style="font-size:12px;color:var(--mute);margin-top:6px">Training focus: <b>${d.trainingFocus}</b> · ${d.totalSets} sets · ${d.totalReps} reps</p>`}
+// ---------- playground & docs
+function fillBody(){$('pBody').value=JSON.stringify(EPS[$('pEp').value].b,null,2)}
+async function send(){const ep=$('pEp').value,t=performance.now();let r;
+  try{JSON.parse($('pBody').value)}catch(e){$('pStat').textContent='invalid JSON';$('pOut').textContent='// '+e.message;return}
+  try{r=await fetch(API+ep,{method:'POST',headers:{'Content-Type':'application/json','X-API-Key':$('pKey').value},body:$('pBody').value})}catch(e){$('pStat').textContent='network error';$('pOut').textContent='// Cannot reach '+API;return}
+  const ms=Math.round(performance.now()-t),rl=r.headers.get('X-RateLimit-Remaining');
+  $('pStat').textContent=`${r.status} ${r.ok?'OK':''} · ${ms} ms${rl?' · '+rl+' req left':''}`;
+  if((r.headers.get('content-type')||'').includes('pdf')){$('pOut').textContent='// application/pdf · '+(await r.blob()).size+' bytes — use Workout Lab to download';return}
+  $('pOut').textContent=JSON.stringify(await r.json(),null,2)}
+$('pEp').innerHTML=Object.keys(EPS).map(k=>`<option value="${k}">POST ${k}</option>`).join('');
+$('pEp').value='/metrics/training-balance';fillBody();$('pKey').value=KEY;
+const EX=['/metrics/training-balance','/metrics/readiness'];let g='';
+$('dList').innerHTML=`<div class="grp">System</div><div class="ep"><div class="t"><span class="m get">GET</span><code>/health</code><span>Service status (public)</span></div></div><div class="ep"><div class="t"><span class="m get">GET</span><code>/keys/me</code><span>Usage & rate limit of your key</span></div></div>`+Object.entries(EPS).map(([k,e],i)=>{const h=e.g!=g?`<div class="grp">${e.g}</div>`:'';g=e.g;return h+`<div class="ep"><div class="t"><span class="m">POST</span><code>${k}</code><span>${e.d}</span></div>${EX.includes(k)?`<div class="b"><div><label>Request</label><pre>${JSON.stringify(e.b,null,1).replace(/\n\s*(\d)/g,' $1')}</pre></div><div><label>Response 200</label><pre id="ex${i}">…</pre></div></div>`:''}</div>`}).join('');
+$('apiUrl').textContent=API;drawSets();
+health().then(async up=>{ if(!up) return; await checkKey();
+  [dash,calc,balance,ready,paceCalc,vo2,lift,volume].reduce((p,f)=>p.then(()=>safe(f)),Promise.resolve());
+  Object.keys(EPS).forEach((k,i)=>{if(EX.includes(k))post(k,EPS[k].b).then(j=>{const el=$('ex'+i);if(el)el.textContent=JSON.stringify(j,null,2)})});
+});
+</script>
+</body>
+</html>

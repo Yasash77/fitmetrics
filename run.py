@@ -27,7 +27,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 BACKEND = ROOT / "backend"
-REQUIRED = {"fastapi": "fastapi", "uvicorn": "uvicorn[standard]", "httpx": "httpx",
+REQUIRED = {"fastapi": "fastapi", "uvicorn": "uvicorn[standard]", "httpx": "httpx", "sqlalchemy": "sqlalchemy>=2.0",
             "pydantic": "pydantic", "reportlab": "reportlab"}
 
 
@@ -83,6 +83,10 @@ def main():
     sys.path.insert(0, str(BACKEND))
 
     port = free_port(int(os.getenv("PORT", "8000")))
+    # FitPulse user platform — local development defaults (override with real values to go live):
+    os.environ.setdefault("PLAN_SERVICE_MODE", "mock")          # labelled placeholder until Maajith's plan URL is set
+    os.environ.setdefault("DEV_SHOW_RESET_LINK", "true")        # show reset links on screen locally (no e-mail server)
+    os.environ.setdefault("FITPULSE_API_KEY", "fp_demo_public_key")   # FitPulse's public demo key
     stub = None
     if not os.getenv("FITPULSE_BASE_URL"):
         stub_port = free_port(port + 1)
@@ -105,7 +109,9 @@ def main():
 
     url = f"http://localhost:{port}"
     print("\n" + "=" * 64)
-    print(f"  FitMetrics website : {url}")
+    print(f"  FitPulse app       : {url}")
+    print(f"  FitMetrics console : {url}/tools.html")
+    print(f"  Plan service       : {os.getenv('PLAN_SERVICE_URL') or 'development mock (labelled)'}")
     print(f"  API docs (Swagger) : {url}/docs")
     print(f"  Partner FitPulse   : {partner}")
     print("  Stop               : Ctrl+C")

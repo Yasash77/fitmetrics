@@ -1,0 +1,1477 @@
+{
+ "version": 1,
+ "disclaimer": "FitPulse provides general fitness guidance, not medical advice. If you are pregnant, have a heart, lung or metabolic condition, an injury, or any symptom such as chest pain, dizziness or unusual breathlessness during exercise, talk to a qualified healthcare professional before starting or changing a programme. Stop any exercise that causes pain.",
+ "steps": [
+  {
+   "id": "basics",
+   "title": "About you",
+   "description": "Used to size training volume and to estimate your energy needs. Stored privately in your account.",
+   "fields": [
+    {
+     "id": "dateOfBirth",
+     "label": "Date of birth",
+     "type": "date",
+     "required": true,
+     "help": "FitPulse is for people aged 16 and over."
+    },
+    {
+     "id": "sex",
+     "label": "Sex used for energy equations",
+     "type": "radio",
+     "required": true,
+     "options": [
+      {
+       "value": "female",
+       "label": "Female"
+      },
+      {
+       "value": "male",
+       "label": "Male"
+      },
+      {
+       "value": "not_specified",
+       "label": "Prefer not to say"
+      }
+     ],
+     "help": "Only used by the calorie equations. If you prefer not to say, energy estimates are skipped."
+    },
+    {
+     "id": "units",
+     "label": "Units",
+     "type": "radio",
+     "required": true,
+     "default": "metric",
+     "options": [
+      {
+       "value": "metric",
+       "label": "Metric (cm, kg)"
+      },
+      {
+       "value": "imperial",
+       "label": "Imperial (ft/in, lb)"
+      }
+     ]
+    },
+    {
+     "id": "heightCm",
+     "label": "Height",
+     "type": "number",
+     "unitKind": "height",
+     "required": true,
+     "min": 120,
+     "max": 230,
+     "step": 0.5,
+     "unit": "cm"
+    },
+    {
+     "id": "weightKg",
+     "label": "Weight",
+     "type": "number",
+     "unitKind": "weight",
+     "required": true,
+     "min": 30,
+     "max": 300,
+     "step": 0.1,
+     "unit": "kg"
+    },
+    {
+     "id": "activityLevel",
+     "label": "Day-to-day activity outside training",
+     "type": "select",
+     "required": true,
+     "options": [
+      {
+       "value": "sedentary",
+       "label": "Mostly sitting"
+      },
+      {
+       "value": "light",
+       "label": "Lightly active"
+      },
+      {
+       "value": "moderate",
+       "label": "Moderately active"
+      },
+      {
+       "value": "active",
+       "label": "Active job / lots of walking"
+      },
+      {
+       "value": "very_active",
+       "label": "Very physical job"
+      }
+     ]
+    },
+    {
+     "id": "bodyFatPct",
+     "label": "Body fat % (optional)",
+     "type": "number",
+     "min": 3,
+     "max": 60,
+     "step": 0.1,
+     "unit": "%",
+     "help": "Only if you have a recent measurement. Leave blank otherwise."
+    },
+    {
+     "id": "restingHr",
+     "label": "Resting heart rate (optional)",
+     "type": "number",
+     "min": 30,
+     "max": 120,
+     "step": 1,
+     "unit": "bpm",
+     "help": "Lets workout heart-rate data be analysed by FitMetrics."
+    }
+   ]
+  },
+  {
+   "id": "goals",
+   "title": "Your goals",
+   "description": "Pick one primary goal. Secondary goals are optional.",
+   "fields": [
+    {
+     "id": "primaryGoal",
+     "label": "Primary goal",
+     "type": "cards",
+     "required": true,
+     "options": [
+      {
+       "value": "muscle_gain",
+       "label": "Muscle gain"
+      },
+      {
+       "value": "strength",
+       "label": "Strength"
+      },
+      {
+       "value": "fat_loss",
+       "label": "Fat loss"
+      },
+      {
+       "value": "recomposition",
+       "label": "Body recomposition"
+      },
+      {
+       "value": "cardio_fitness",
+       "label": "Cardiovascular fitness"
+      },
+      {
+       "value": "endurance",
+       "label": "Endurance"
+      },
+      {
+       "value": "general_health",
+       "label": "General health"
+      },
+      {
+       "value": "athletic_performance",
+       "label": "Athletic performance"
+      },
+      {
+       "value": "hyrox",
+       "label": "HYROX preparation"
+      },
+      {
+       "value": "sport_conditioning",
+       "label": "Sport-specific conditioning"
+      },
+      {
+       "value": "swimming",
+       "label": "Swimming improvement"
+      },
+      {
+       "value": "running",
+       "label": "Running improvement"
+      },
+      {
+       "value": "mobility",
+       "label": "Mobility & flexibility"
+      }
+     ]
+    },
+    {
+     "id": "secondaryGoals",
+     "label": "Secondary goals (up to 2)",
+     "type": "multiselect",
+     "maxItems": 2,
+     "options": [
+      {
+       "value": "muscle_gain",
+       "label": "Muscle gain"
+      },
+      {
+       "value": "strength",
+       "label": "Strength"
+      },
+      {
+       "value": "fat_loss",
+       "label": "Fat loss"
+      },
+      {
+       "value": "recomposition",
+       "label": "Body recomposition"
+      },
+      {
+       "value": "cardio_fitness",
+       "label": "Cardiovascular fitness"
+      },
+      {
+       "value": "endurance",
+       "label": "Endurance"
+      },
+      {
+       "value": "general_health",
+       "label": "General health"
+      },
+      {
+       "value": "athletic_performance",
+       "label": "Athletic performance"
+      },
+      {
+       "value": "hyrox",
+       "label": "HYROX preparation"
+      },
+      {
+       "value": "sport_conditioning",
+       "label": "Sport-specific conditioning"
+      },
+      {
+       "value": "swimming",
+       "label": "Swimming improvement"
+      },
+      {
+       "value": "running",
+       "label": "Running improvement"
+      },
+      {
+       "value": "mobility",
+       "label": "Mobility & flexibility"
+      }
+     ],
+     "excludeField": "primaryGoal"
+    },
+    {
+     "id": "targetWeightKg",
+     "label": "Target weight (optional)",
+     "type": "number",
+     "unitKind": "weight",
+     "min": 30,
+     "max": 300,
+     "step": 0.1,
+     "unit": "kg",
+     "showIf": {
+      "field": "primaryGoal",
+      "in": [
+       "fat_loss",
+       "muscle_gain",
+       "recomposition"
+      ]
+     },
+     "help": "A safe rate is roughly 0.25–1% of body weight per week. FitPulse will flag targets that are too fast."
+    },
+    {
+     "id": "targetEvent",
+     "label": "Event or race you're training for (optional)",
+     "type": "text",
+     "maxLength": 120,
+     "placeholder": "e.g. HYROX Open in March, local 10K",
+     "showIf": {
+      "field": "primaryGoal",
+      "in": [
+       "hyrox",
+       "running",
+       "swimming",
+       "endurance",
+       "athletic_performance",
+       "sport_conditioning"
+      ]
+     }
+    },
+    {
+     "id": "goalNotes",
+     "label": "Anything else about your goal? (optional)",
+     "type": "textarea",
+     "maxLength": 500
+    }
+   ]
+  },
+  {
+   "id": "timeline",
+   "title": "Timeline",
+   "description": "How long should this block of training run?",
+   "fields": [
+    {
+     "id": "timeline",
+     "label": "Programme length",
+     "type": "radio",
+     "required": true,
+     "options": [
+      {
+       "value": "4",
+       "label": "4 weeks"
+      },
+      {
+       "value": "8",
+       "label": "8 weeks"
+      },
+      {
+       "value": "12",
+       "label": "12 weeks"
+      },
+      {
+       "value": "16",
+       "label": "16 weeks"
+      },
+      {
+       "value": "custom",
+       "label": "Until a specific date"
+      }
+     ]
+    },
+    {
+     "id": "targetDate",
+     "label": "Target date",
+     "type": "date",
+     "required": true,
+     "future": true,
+     "maxWeeks": 52,
+     "showIf": {
+      "field": "timeline",
+      "equals": "custom"
+     }
+    }
+   ]
+  },
+  {
+   "id": "experience",
+   "title": "Experience",
+   "description": "Be honest — plans that start at the right level are the ones people stick to.",
+   "fields": [
+    {
+     "id": "experienceLevel",
+     "label": "Training experience",
+     "type": "cards",
+     "required": true,
+     "options": [
+      {
+       "value": "beginner",
+       "label": "Beginner — new or under 6 months"
+      },
+      {
+       "value": "intermediate",
+       "label": "Intermediate — 6 months to 3 years, consistent"
+      },
+      {
+       "value": "advanced",
+       "label": "Advanced — 3+ years, structured training"
+      },
+      {
+       "value": "returning",
+       "label": "Returning after a break"
+      }
+     ]
+    },
+    {
+     "id": "breakMonths",
+     "label": "How long was the break?",
+     "type": "select",
+     "required": true,
+     "options": [
+      {
+       "value": "3",
+       "label": "Under 3 months"
+      },
+      {
+       "value": "6",
+       "label": "3–6 months"
+      },
+      {
+       "value": "12",
+       "label": "6–12 months"
+      },
+      {
+       "value": "24",
+       "label": "More than a year"
+      }
+     ],
+     "showIf": {
+      "field": "experienceLevel",
+      "equals": "returning"
+     }
+    }
+   ]
+  },
+  {
+   "id": "disciplines",
+   "title": "Training styles",
+   "description": "Choose up to four. You'll get a few short questions for each.",
+   "fields": [
+    {
+     "id": "disciplines",
+     "label": "Training styles",
+     "type": "multiselect",
+     "required": true,
+     "minItems": 1,
+     "maxItems": 4,
+     "options": [
+      {
+       "value": "gym",
+       "label": "Gym & bodybuilding"
+      },
+      {
+       "value": "swimming",
+       "label": "Swimming"
+      },
+      {
+       "value": "hiit",
+       "label": "HIIT"
+      },
+      {
+       "value": "hyrox",
+       "label": "HYROX & functional fitness"
+      },
+      {
+       "value": "running",
+       "label": "Running & cardio"
+      },
+      {
+       "value": "cycling",
+       "label": "Cycling"
+      },
+      {
+       "value": "calisthenics",
+       "label": "Calisthenics"
+      },
+      {
+       "value": "yoga",
+       "label": "Yoga"
+      },
+      {
+       "value": "mobility",
+       "label": "Mobility"
+      },
+      {
+       "value": "sports",
+       "label": "Sports conditioning"
+      },
+      {
+       "value": "circuit",
+       "label": "Circuit training"
+      },
+      {
+       "value": "bands",
+       "label": "Resistance bands"
+      },
+      {
+       "value": "home",
+       "label": "Home workouts"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "discipline_details",
+   "title": "Style details",
+   "description": "Short, style-specific questions. Skip anything you don't know.",
+   "dynamic": "disciplines",
+   "fields": []
+  },
+  {
+   "id": "availability",
+   "title": "Availability",
+   "description": "Your plan will fit around this.",
+   "fields": [
+    {
+     "id": "daysPerWeek",
+     "label": "Training days per week",
+     "type": "number",
+     "required": true,
+     "min": 1,
+     "max": 7,
+     "step": 1,
+     "default": 3
+    },
+    {
+     "id": "preferredDays",
+     "label": "Preferred days (optional)",
+     "type": "multiselect",
+     "options": [
+      {
+       "value": "mon",
+       "label": "Mon"
+      },
+      {
+       "value": "tue",
+       "label": "Tue"
+      },
+      {
+       "value": "wed",
+       "label": "Wed"
+      },
+      {
+       "value": "thu",
+       "label": "Thu"
+      },
+      {
+       "value": "fri",
+       "label": "Fri"
+      },
+      {
+       "value": "sat",
+       "label": "Sat"
+      },
+      {
+       "value": "sun",
+       "label": "Sun"
+      }
+     ]
+    },
+    {
+     "id": "sessionMinutes",
+     "label": "Typical session length",
+     "type": "radio",
+     "required": true,
+     "options": [
+      {
+       "value": "20",
+       "label": "20 min"
+      },
+      {
+       "value": "30",
+       "label": "30 min"
+      },
+      {
+       "value": "45",
+       "label": "45 min"
+      },
+      {
+       "value": "60",
+       "label": "60 min"
+      },
+      {
+       "value": "75",
+       "label": "75 min"
+      },
+      {
+       "value": "90",
+       "label": "90 min"
+      }
+     ]
+    },
+    {
+     "id": "timeOfDay",
+     "label": "Usual time of day",
+     "type": "radio",
+     "options": [
+      {
+       "value": "morning",
+       "label": "Morning"
+      },
+      {
+       "value": "midday",
+       "label": "Midday"
+      },
+      {
+       "value": "evening",
+       "label": "Evening"
+      },
+      {
+       "value": "varies",
+       "label": "Varies"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "equipment",
+   "title": "Equipment & facilities",
+   "description": "Only exercises you can actually do will be suggested.",
+   "fields": [
+    {
+     "id": "locations",
+     "label": "Where you train",
+     "type": "multiselect",
+     "required": true,
+     "minItems": 1,
+     "options": [
+      {
+       "value": "gym",
+       "label": "Commercial gym"
+      },
+      {
+       "value": "home",
+       "label": "Home"
+      },
+      {
+       "value": "outdoors",
+       "label": "Outdoors / park"
+      },
+      {
+       "value": "pool",
+       "label": "Swimming pool"
+      },
+      {
+       "value": "track",
+       "label": "Running track"
+      },
+      {
+       "value": "studio",
+       "label": "Studio / class"
+      }
+     ]
+    },
+    {
+     "id": "equipment",
+     "label": "Equipment available",
+     "type": "multiselect",
+     "options": [
+      {
+       "value": "barbell",
+       "label": "Barbell & plates"
+      },
+      {
+       "value": "dumbbells",
+       "label": "Dumbbells"
+      },
+      {
+       "value": "kettlebells",
+       "label": "Kettlebells"
+      },
+      {
+       "value": "machines",
+       "label": "Machines"
+      },
+      {
+       "value": "cables",
+       "label": "Cable station"
+      },
+      {
+       "value": "pullup_bar",
+       "label": "Pull-up bar"
+      },
+      {
+       "value": "bands",
+       "label": "Resistance bands"
+      },
+      {
+       "value": "bike",
+       "label": "Bike / indoor trainer"
+      },
+      {
+       "value": "rower",
+       "label": "Rower"
+      },
+      {
+       "value": "skierg",
+       "label": "SkiErg"
+      },
+      {
+       "value": "sled",
+       "label": "Sled"
+      },
+      {
+       "value": "treadmill",
+       "label": "Treadmill"
+      },
+      {
+       "value": "jump_rope",
+       "label": "Jump rope"
+      },
+      {
+       "value": "mat",
+       "label": "Exercise mat"
+      },
+      {
+       "value": "none",
+       "label": "No equipment"
+      }
+     ]
+    },
+    {
+     "id": "poolLength",
+     "label": "Pool length",
+     "type": "radio",
+     "options": [
+      {
+       "value": "25m",
+       "label": "25 m"
+      },
+      {
+       "value": "50m",
+       "label": "50 m"
+      },
+      {
+       "value": "25yd",
+       "label": "25 yd"
+      }
+     ],
+     "showIf": {
+      "field": "locations",
+      "includes": "pool"
+     }
+    }
+   ]
+  },
+  {
+   "id": "constraints",
+   "title": "Health & preferences",
+   "description": "Optional details that keep your plan safe and enjoyable.",
+   "fields": [
+    {
+     "id": "healthCheck",
+     "label": "Health check",
+     "type": "radio",
+     "required": true,
+     "options": [
+      {
+       "value": "none",
+       "label": "I have no known conditions that affect exercise"
+      },
+      {
+       "value": "cleared",
+       "label": "I have a condition or injury and a clinician has cleared me to train"
+      },
+      {
+       "value": "unsure",
+       "label": "I'm not sure / I haven't checked"
+      }
+     ]
+    },
+    {
+     "id": "injuries",
+     "label": "Injuries or limitations (optional)",
+     "type": "textarea",
+     "maxLength": 500,
+     "placeholder": "e.g. old left knee injury, avoid deep lunges"
+    },
+    {
+     "id": "avoidMovements",
+     "label": "Movements to avoid (optional)",
+     "type": "multiselect",
+     "options": [
+      {
+       "value": "impact",
+       "label": "High-impact / jumping"
+      },
+      {
+       "value": "running",
+       "label": "Running"
+      },
+      {
+       "value": "overhead",
+       "label": "Overhead pressing"
+      },
+      {
+       "value": "deep_knee",
+       "label": "Deep knee bending"
+      },
+      {
+       "value": "spinal_load",
+       "label": "Heavy spinal loading"
+      },
+      {
+       "value": "floor",
+       "label": "Getting up and down from the floor"
+      }
+     ]
+    },
+    {
+     "id": "intensityPreference",
+     "label": "How hard do you like to train?",
+     "type": "radio",
+     "options": [
+      {
+       "value": "gentle",
+       "label": "Gentle"
+      },
+      {
+       "value": "balanced",
+       "label": "Balanced"
+      },
+      {
+       "value": "hard",
+       "label": "Hard"
+      }
+     ]
+    },
+    {
+     "id": "enjoys",
+     "label": "What do you enjoy or dislike? (optional)",
+     "type": "textarea",
+     "maxLength": 500
+    },
+    {
+     "id": "disclaimerAccepted",
+     "label": "I understand FitPulse gives general fitness guidance, not medical advice.",
+     "type": "boolean",
+     "required": true,
+     "mustBeTrue": true
+    }
+   ]
+  }
+ ],
+ "disciplines": {
+  "gym": {
+   "label": "Gym & bodybuilding",
+   "fields": [
+    {
+     "id": "gymFocus",
+     "label": "Main focus",
+     "type": "radio",
+     "options": [
+      {
+       "value": "hypertrophy",
+       "label": "Muscle size"
+      },
+      {
+       "value": "strength",
+       "label": "Strength"
+      },
+      {
+       "value": "both",
+       "label": "Both"
+      }
+     ]
+    },
+    {
+     "id": "splitPreference",
+     "label": "Preferred split",
+     "type": "select",
+     "options": [
+      {
+       "value": "any",
+       "label": "No preference"
+      },
+      {
+       "value": "full_body",
+       "label": "Full body"
+      },
+      {
+       "value": "upper_lower",
+       "label": "Upper / lower"
+      },
+      {
+       "value": "ppl",
+       "label": "Push / pull / legs"
+      }
+     ]
+    },
+    {
+     "id": "squatKg",
+     "label": "Recent squat working weight (optional)",
+     "type": "number",
+     "unitKind": "weight",
+     "min": 0,
+     "max": 500,
+     "unit": "kg"
+    },
+    {
+     "id": "benchKg",
+     "label": "Recent bench working weight (optional)",
+     "type": "number",
+     "unitKind": "weight",
+     "min": 0,
+     "max": 400,
+     "unit": "kg"
+    },
+    {
+     "id": "deadliftKg",
+     "label": "Recent deadlift working weight (optional)",
+     "type": "number",
+     "unitKind": "weight",
+     "min": 0,
+     "max": 500,
+     "unit": "kg"
+    }
+   ]
+  },
+  "swimming": {
+   "label": "Swimming",
+   "fields": [
+    {
+     "id": "swimLevel",
+     "label": "Swimming level",
+     "type": "radio",
+     "options": [
+      {
+       "value": "learning",
+       "label": "Still learning"
+      },
+      {
+       "value": "comfortable",
+       "label": "Comfortable front crawl"
+      },
+      {
+       "value": "club",
+       "label": "Club / competitive"
+      }
+     ]
+    },
+    {
+     "id": "strokes",
+     "label": "Strokes you swim",
+     "type": "multiselect",
+     "options": [
+      {
+       "value": "freestyle",
+       "label": "Freestyle"
+      },
+      {
+       "value": "backstroke",
+       "label": "Backstroke"
+      },
+      {
+       "value": "breaststroke",
+       "label": "Breaststroke"
+      },
+      {
+       "value": "butterfly",
+       "label": "Butterfly"
+      }
+     ]
+    },
+    {
+     "id": "swim400",
+     "label": "400 m time (optional, mm:ss)",
+     "type": "text",
+     "pattern": "^\\d{1,2}:\\d{2}$",
+     "maxLength": 5,
+     "placeholder": "8:30"
+    },
+    {
+     "id": "swimGoal",
+     "label": "Swimming focus",
+     "type": "radio",
+     "options": [
+      {
+       "value": "technique",
+       "label": "Technique"
+      },
+      {
+       "value": "endurance",
+       "label": "Endurance"
+      },
+      {
+       "value": "speed",
+       "label": "Speed"
+      },
+      {
+       "value": "open_water",
+       "label": "Open water"
+      }
+     ]
+    }
+   ]
+  },
+  "hiit": {
+   "label": "HIIT",
+   "fields": [
+    {
+     "id": "hiitImpact",
+     "label": "Impact",
+     "type": "radio",
+     "options": [
+      {
+       "value": "low",
+       "label": "Low-impact only"
+      },
+      {
+       "value": "high",
+       "label": "High-impact is fine"
+      }
+     ]
+    },
+    {
+     "id": "hiitFormat",
+     "label": "Favourite format",
+     "type": "select",
+     "options": [
+      {
+       "value": "any",
+       "label": "No preference"
+      },
+      {
+       "value": "intervals",
+       "label": "Work / rest intervals"
+      },
+      {
+       "value": "emom",
+       "label": "EMOM"
+      },
+      {
+       "value": "amrap",
+       "label": "AMRAP"
+      },
+      {
+       "value": "tabata",
+       "label": "Tabata"
+      }
+     ]
+    }
+   ]
+  },
+  "hyrox": {
+   "label": "HYROX & functional fitness",
+   "fields": [
+    {
+     "id": "hyroxDivision",
+     "label": "Division",
+     "type": "select",
+     "options": [
+      {
+       "value": "open",
+       "label": "Open"
+      },
+      {
+       "value": "pro",
+       "label": "Pro"
+      },
+      {
+       "value": "doubles",
+       "label": "Doubles"
+      },
+      {
+       "value": "relay",
+       "label": "Relay"
+      },
+      {
+       "value": "none",
+       "label": "Not racing yet"
+      }
+     ]
+    },
+    {
+     "id": "hyroxRaceDate",
+     "label": "Race date (optional)",
+     "type": "date",
+     "future": true
+    },
+    {
+     "id": "hyroxWeak",
+     "label": "Stations you want to improve",
+     "type": "multiselect",
+     "options": [
+      {
+       "value": "run",
+       "label": "Running"
+      },
+      {
+       "value": "skierg",
+       "label": "SkiErg"
+      },
+      {
+       "value": "sled_push",
+       "label": "Sled push"
+      },
+      {
+       "value": "sled_pull",
+       "label": "Sled pull"
+      },
+      {
+       "value": "burpee_bj",
+       "label": "Burpee broad jumps"
+      },
+      {
+       "value": "row",
+       "label": "Rowing"
+      },
+      {
+       "value": "farmers",
+       "label": "Farmers carry"
+      },
+      {
+       "value": "lunges",
+       "label": "Sandbag lunges"
+      },
+      {
+       "value": "wall_balls",
+       "label": "Wall balls"
+      }
+     ]
+    }
+   ]
+  },
+  "running": {
+   "label": "Running & cardio",
+   "fields": [
+    {
+     "id": "runDistance",
+     "label": "Target distance",
+     "type": "select",
+     "options": [
+      {
+       "value": "general",
+       "label": "General fitness"
+      },
+      {
+       "value": "5k",
+       "label": "5K"
+      },
+      {
+       "value": "10k",
+       "label": "10K"
+      },
+      {
+       "value": "half",
+       "label": "Half marathon"
+      },
+      {
+       "value": "marathon",
+       "label": "Marathon"
+      }
+     ]
+    },
+    {
+     "id": "weeklyKm",
+     "label": "Current weekly distance (optional)",
+     "type": "number",
+     "min": 0,
+     "max": 250,
+     "unit": "km"
+    },
+    {
+     "id": "recent5k",
+     "label": "Recent 5K time (optional, mm:ss)",
+     "type": "text",
+     "pattern": "^\\d{1,2}:\\d{2}$",
+     "maxLength": 5,
+     "placeholder": "27:30"
+    }
+   ]
+  },
+  "cycling": {
+   "label": "Cycling",
+   "fields": [
+    {
+     "id": "cyclingType",
+     "label": "Where you ride",
+     "type": "radio",
+     "options": [
+      {
+       "value": "road",
+       "label": "Road"
+      },
+      {
+       "value": "indoor",
+       "label": "Indoor trainer"
+      },
+      {
+       "value": "mtb",
+       "label": "Mountain bike"
+      },
+      {
+       "value": "commute",
+       "label": "Commuting"
+      }
+     ]
+    },
+    {
+     "id": "ftpWatts",
+     "label": "FTP (optional)",
+     "type": "number",
+     "min": 50,
+     "max": 500,
+     "unit": "W"
+    },
+    {
+     "id": "weeklyRideHours",
+     "label": "Current weekly riding (optional)",
+     "type": "number",
+     "min": 0,
+     "max": 30,
+     "step": 0.5,
+     "unit": "h"
+    }
+   ]
+  },
+  "calisthenics": {
+   "label": "Calisthenics",
+   "fields": [
+    {
+     "id": "maxPullups",
+     "label": "Max strict pull-ups",
+     "type": "number",
+     "min": 0,
+     "max": 60
+    },
+    {
+     "id": "maxPushups",
+     "label": "Max push-ups",
+     "type": "number",
+     "min": 0,
+     "max": 150
+    },
+    {
+     "id": "skillGoals",
+     "label": "Skills to work towards",
+     "type": "multiselect",
+     "options": [
+      {
+       "value": "pullup",
+       "label": "First pull-up"
+      },
+      {
+       "value": "muscle_up",
+       "label": "Muscle-up"
+      },
+      {
+       "value": "handstand",
+       "label": "Handstand"
+      },
+      {
+       "value": "pistol",
+       "label": "Pistol squat"
+      },
+      {
+       "value": "lsit",
+       "label": "L-sit"
+      },
+      {
+       "value": "front_lever",
+       "label": "Front lever"
+      }
+     ]
+    }
+   ]
+  },
+  "yoga": {
+   "label": "Yoga",
+   "fields": [
+    {
+     "id": "yogaStyle",
+     "label": "Style",
+     "type": "select",
+     "options": [
+      {
+       "value": "hatha",
+       "label": "Gentle / hatha"
+      },
+      {
+       "value": "vinyasa",
+       "label": "Vinyasa flow"
+      },
+      {
+       "value": "yin",
+       "label": "Yin"
+      },
+      {
+       "value": "power",
+       "label": "Power"
+      }
+     ]
+    },
+    {
+     "id": "yogaFocus",
+     "label": "Focus",
+     "type": "multiselect",
+     "options": [
+      {
+       "value": "flexibility",
+       "label": "Flexibility"
+      },
+      {
+       "value": "balance",
+       "label": "Balance"
+      },
+      {
+       "value": "relaxation",
+       "label": "Relaxation"
+      },
+      {
+       "value": "strength",
+       "label": "Strength"
+      }
+     ]
+    }
+   ]
+  },
+  "mobility": {
+   "label": "Mobility",
+   "fields": [
+    {
+     "id": "mobilityAreas",
+     "label": "Areas to work on",
+     "type": "multiselect",
+     "options": [
+      {
+       "value": "hips",
+       "label": "Hips"
+      },
+      {
+       "value": "shoulders",
+       "label": "Shoulders"
+      },
+      {
+       "value": "thoracic",
+       "label": "Upper back"
+      },
+      {
+       "value": "ankles",
+       "label": "Ankles"
+      },
+      {
+       "value": "hamstrings",
+       "label": "Hamstrings"
+      },
+      {
+       "value": "lower_back",
+       "label": "Lower back"
+      }
+     ]
+    },
+    {
+     "id": "mobilityFormat",
+     "label": "Format",
+     "type": "radio",
+     "options": [
+      {
+       "value": "daily",
+       "label": "Short daily routines"
+      },
+      {
+       "value": "sessions",
+       "label": "Dedicated sessions"
+      }
+     ]
+    }
+   ]
+  },
+  "sports": {
+   "label": "Sports conditioning",
+   "fields": [
+    {
+     "id": "sportName",
+     "label": "Sport",
+     "type": "text",
+     "maxLength": 60,
+     "placeholder": "e.g. football, badminton"
+    },
+    {
+     "id": "sportSeason",
+     "label": "Season phase",
+     "type": "radio",
+     "options": [
+      {
+       "value": "off",
+       "label": "Off-season"
+      },
+      {
+       "value": "pre",
+       "label": "Pre-season"
+      },
+      {
+       "value": "in",
+       "label": "In-season"
+      }
+     ]
+    },
+    {
+     "id": "sportDemands",
+     "label": "Most important qualities",
+     "type": "multiselect",
+     "options": [
+      {
+       "value": "speed",
+       "label": "Speed"
+      },
+      {
+       "value": "agility",
+       "label": "Agility"
+      },
+      {
+       "value": "power",
+       "label": "Power"
+      },
+      {
+       "value": "endurance",
+       "label": "Endurance"
+      },
+      {
+       "value": "strength",
+       "label": "Strength"
+      }
+     ]
+    }
+   ]
+  },
+  "circuit": {
+   "label": "Circuit training",
+   "fields": [
+    {
+     "id": "circuitStyle",
+     "label": "Circuit style",
+     "type": "radio",
+     "options": [
+      {
+       "value": "bodyweight",
+       "label": "Bodyweight"
+      },
+      {
+       "value": "equipment",
+       "label": "With equipment"
+      },
+      {
+       "value": "mixed",
+       "label": "Mixed"
+      }
+     ]
+    }
+   ]
+  },
+  "bands": {
+   "label": "Resistance bands",
+   "fields": [
+    {
+     "id": "bandType",
+     "label": "Bands you have",
+     "type": "multiselect",
+     "options": [
+      {
+       "value": "loop",
+       "label": "Mini loop bands"
+      },
+      {
+       "value": "long",
+       "label": "Long loop bands"
+      },
+      {
+       "value": "tube",
+       "label": "Tube bands with handles"
+      }
+     ]
+    }
+   ]
+  },
+  "home": {
+   "label": "Home workouts",
+   "fields": [
+    {
+     "id": "homeSpace",
+     "label": "Space available",
+     "type": "radio",
+     "options": [
+      {
+       "value": "small",
+       "label": "Small — a mat's worth"
+      },
+      {
+       "value": "medium",
+       "label": "Room to move"
+      },
+      {
+       "value": "outdoor",
+       "label": "Garden / outdoor space"
+      }
+     ]
+    },
+    {
+     "id": "quietOnly",
+     "label": "I need quiet workouts (no jumping)",
+     "type": "boolean"
+    }
+   ]
+  }
+ }
+}
