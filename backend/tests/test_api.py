@@ -513,3 +513,15 @@ def test_training_balance_from_fitmetrics_engine_after_four_weeks():
         assert r.json()["data"]["analysisStatus"] == "analysed"
     tb = c.get("/api/progress").json()["data"]["trainingBalance"]
     assert tb["status"] == "ok" and tb["source"].startswith("FitMetrics") and 0.5 < tb["acwr"] < 1.6
+
+
+@pytest.mark.usefixtures("platform_env")
+def test_energy_kept_when_goal_plan_call_fails(monkeypatch):
+    async def denied(*a, **k):
+        raise fitpulse.PartnerUnavailable("HTTP 401")
+    monkeypatch.setattr(fitpulse, "goal_plan", denied)
+    c = new_client()
+    register(c, "gp@example.com")
+    onboard(c)
+    e = c.post("/api/plans", json={"idempotencyKey": "gp-123456"}, headers=CS).json()["data"]["energy"]
+    assert e["status"] == "ok" and e["calories"]["tdee"] == 2077 and "goalPlan" not in e and "401" in e["goalPlanError"]

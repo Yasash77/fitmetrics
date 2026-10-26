@@ -11,6 +11,7 @@ from typing import Any, Optional
 
 from sqlalchemy import create_engine, event, text
 from sqlalchemy.engine import Engine
+from sqlalchemy.pool import NullPool
 
 from . import config
 
@@ -43,7 +44,9 @@ def engine() -> Engine:
             _engine = create_engine(url, connect_args={"check_same_thread": False})
             event.listen(_engine, "connect", lambda con, _rec: con.execute("PRAGMA foreign_keys=ON"))
         else:
-            _engine = create_engine(url, pool_pre_ping=True, pool_size=2, max_overflow=2, pool_recycle=300)
+            # Serverless + Neon's pooled endpoint (PgBouncer, transaction mode): no client-side pool and no
+            # server-side prepared statements, which transaction pooling does not support.
+            _engine = create_engine(url, poolclass=NullPool, connect_args={"prepare_threshold": None})
         init_schema(_engine)
     return _engine
 

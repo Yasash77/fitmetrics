@@ -764,6 +764,7 @@ document.addEventListener('DOMContentLoaded', () => FP.start());
         ${m.proteinGrams ? `<div class="kpi"><span class="value">${h(m.proteinGrams)} g</span><span class="label">Protein/day</span></div>` : ''}
         ${g && g.weeklyChangeKg != null ? `<div class="kpi"><span class="value">${g.weeklyChangeKg > 0 ? '+' : ''}${h(g.weeklyChangeKg)} kg</span><span class="label">Planned change/week</span></div>` : ''}
       </div>
+      ${e.goalPlanError ? `<p class="small muted" style="margin:12px 0 0">${h(e.goalPlanError)}</p>` : ''}
       ${g && g.advice ? `<p class="small" style="margin:12px 0 0">${h(g.advice)}${g.recommendedWeeks && (g.safety === 'Unsafe' || g.safety === 'Aggressive') ? ` A safer timeframe is about ${h(Math.ceil(g.recommendedWeeks))} weeks.` : ''}</p>` : ''}
       <p class="tiny muted" style="margin:10px 0 0">Calculated by ${h(e.source)} from your profile. Estimates only — individual needs vary.</p></div>`;
   }

@@ -296,13 +296,16 @@ async def energy_context(profile: dict) -> dict:
     out = {"source": FITPULSE_LABEL, "status": "ok"}
     try:
         out["calories"] = await fitpulse.energy_needs(*args, profile.get("primaryGoal", ""), profile.get("bodyFatPct"))
-        weeks = onboarding.programme_weeks(profile)
-        if profile.get("targetWeightKg") and weeks:
-            out["goalPlan"] = await fitpulse.goal_plan(*args, float(profile["targetWeightKg"]), weeks)
     except fitpulse.PartnerUnavailable as exc:
         return {"source": FITPULSE_LABEL, "status": "unavailable", "reason": f"FitPulse API unavailable ({exc})."}
     except fitpulse.PartnerRejected as exc:
         return {"source": FITPULSE_LABEL, "status": "rejected", "reason": str(exc)}
+    weeks = onboarding.programme_weeks(profile)
+    if profile.get("targetWeightKg") and weeks:
+        try:   # optional second call; if it fails the calorie result above is still real and shown
+            out["goalPlan"] = await fitpulse.goal_plan(*args, float(profile["targetWeightKg"]), weeks)
+        except (fitpulse.PartnerUnavailable, fitpulse.PartnerRejected) as exc:
+            out["goalPlanError"] = f"Goal-pace check unavailable ({exc})."
     return out
 
 
