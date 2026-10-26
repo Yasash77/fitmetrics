@@ -58,7 +58,7 @@ def partner_down(monkeypatch):
 def test_health_and_key():
     assert get("/health", {}).json()["data"]["status"] == "up"
     assert post("/fitness/bmi", {"weight": 74, "height": 178}, {}).status_code == 401
-    key = post("/keys", {"name": "Majit", "email": "m@vit.ac.in"}, {}).json()["data"]["apiKey"]
+    key = post("/keys", {"name": "Maajith", "email": "m@vit.ac.in"}, {}).json()["data"]["apiKey"]
     assert post("/fitness/bmi", {"weight": 74, "height": 178}, {"X-API-Key": key}).status_code == 200
 
 
@@ -140,5 +140,5 @@ def test_partner_sync(partner_up):
 
 def test_pdf_report(partner_up):
     post("/progress/demo-seed", {"profile": "t_pdf"})
-    r = post("/reports/profile", {**ME, "athlete": "Majit", "neck": 38, "waist": 84, "targetWeight": 70, "weeks": 8, "profile": "t_pdf"})
+    r = post("/reports/profile", {**ME, "athlete": "Maajith", "neck": 38, "waist": 84, "targetWeight": 70, "weeks": 8, "profile": "t_pdf"})
     assert r.status_code == 200 and r.content[:4] == b"%PDF"

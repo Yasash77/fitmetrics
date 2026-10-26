@@ -1,6 +1,6 @@
 """
 FitPulse — Personal Fitness Performance & Progress Management System
-Author : Majit (23MIC0052) · Partner Project: FitMetrics (Yasash S, 23MIC0060)
+Author : Maajith (23MIC0052) · Partner Project: FitMetrics (Yasash S, 23MIC0060)
 
 Run locally:  python run.py  → website http://localhost:8000 · API docs http://localhost:8000/docs
 """
@@ -22,7 +22,7 @@ app = FastAPI(
         "FitMetrics API (23MIC0060). "
         "Send your key in the `X-API-Key` header. Get a free key from `POST /api/v1/keys`."
     ),
-    contact={"name": "Majit · 23MIC0052"},
+    contact={"name": "Maajith · 23MIC0052"},
 )
 app.add_middleware(
     CORSMiddleware,

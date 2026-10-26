@@ -3,7 +3,7 @@ Yasash S · 23MIC0060 · partner project: FitPulse (23MIC0052)
 
 > **This repository holds both team projects**
 > - `/` (backend, frontend, api) — **FitMetrics** (Yasash, 23MIC0060): workout analytics
-> - `/fitpulse` — **FitPulse** (Majit, 23MIC0052): energy needs, body composition, goals & progress tracking — see fitpulse/README.md
+> - `/fitpulse` — **FitPulse** (Maajith, 23MIC0052): energy needs, body composition, goals & progress tracking — see fitpulse/README.md
 >
 > Each project runs on its own and uses the other's API. Running either launcher starts the other one as its partner.
 
@@ -37,7 +37,7 @@ Vercel (no card needed): vercel.com/new → import the repo → Root Directory *
 Import the same repo a second time with Root Directory **`fitpulse`** for FitPulse.
 Then set `FITPULSE_BASE_URL` on FitMetrics and `FITMETRICS_BASE_URL` on FitPulse to each other's `https://…vercel.app/api/v1` and redeploy both.
 Render: New → Web Service, root `backend`, start `uvicorn app.main:app --host 0.0.0.0 --port $PORT`.
-Either way one URL serves the whole site. Set FITPULSE_BASE_URL (env var) to Majit's API URL.
+Either way one URL serves the whole site. Set FITPULSE_BASE_URL (env var) to Maajith's API URL.
 
 ## Troubleshooting
 | Problem | Fix |

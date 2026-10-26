@@ -82,6 +82,6 @@ def profile_pdf(r: dict) -> bytes:
                          [[w["date"], w["activity"].replace("_", " "), f"{w['duration']:g}", f"{w['caloriesBurned']:g}",
                            (w["zone"] or "").split(" ·")[0], f"{w['trainingLoad']:g}"] for w in prog["workouts"]],
                          [28 * mm, 36 * mm, 22 * mm, 22 * mm, 40 * mm, 26 * mm])]
-    story += [Spacer(1, 14), Paragraph("FitPulse API · Majit (23MIC0052) · workout data from partner FitMetrics (23MIC0060)", sub)]
+    story += [Spacer(1, 14), Paragraph("FitPulse API · Maajith (23MIC0052) · workout data from partner FitMetrics (23MIC0060)", sub)]
     doc.build(story)
     return buf.getvalue()

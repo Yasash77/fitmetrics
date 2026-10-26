@@ -133,7 +133,7 @@ nav{gap:22px}
 </nav>
 <div class="modal" id="keyModal"><div class="card">
   <h3>Get a free FitPulse API key</h3><p class="sub" style="margin-bottom:14px">Send it in the <code class="mono">X-API-Key</code> header · 60 requests/min.</p>
-  <div id="keyForm"><label>Name</label><input id="kName" value="Majit"><label style="margin-top:10px">Email</label><input id="kMail" value="majit@vitstudent.ac.in">
+  <div id="keyForm"><label>Name</label><input id="kName" value="Maajith"><label style="margin-top:10px">Email</label><input id="kMail" value="majit@vitstudent.ac.in">
   <div id="kErr" style="color:#d0314a;font-size:13px;margin-top:8px"></div><div style="display:flex;gap:8px;margin-top:12px"><button class="btn" onclick="makeKey()">Generate key</button><button class="btn o" onclick="closeKey()">Cancel</button></div></div>
   <div id="keyDone" style="display:none"><label>Your API key</label><div class="keybox" id="kOut"></div><p style="font-size:13px;color:var(--mute)">Saved in this browser — the website now uses your key.</p><button class="btn" style="margin-top:12px" onclick="closeKey()">Done</button></div>
 </div></div>
@@ -418,7 +418,7 @@ const EPS = {
  'POST /fitness/partner-sync': {g:'Progress (uses FitMetrics)',d:'Energy target adjusted by a FitMetrics workout', b:{age:21,gender:'male',height:178,weight:74,activity:'running',duration:45,avgHr:172,restingHr:62}},
  'POST /progress/demo-seed': {g:'Progress',d:'Fill a profile with 6 weeks of sample data', b:{profile:'demo'}},
  'POST /reports/profile': {g:'Reports & keys',d:'PDF profile & progress report', b:{age:21,gender:'male',height:178,weight:74,profile:'demo'}},
- 'POST /keys': {g:'Reports & keys',d:'Issue a free API key (public)', b:{name:'Majit',email:'majit@vitstudent.ac.in'}},
+ 'POST /keys': {g:'Reports & keys',d:'Issue a free API key (public)', b:{name:'Maajith',email:'majit@vitstudent.ac.in'}},
 };
 function fillBody(){const e=EPS[$('pEp').value];$('pBody').value=e.b?JSON.stringify(e.b,null,2):'// GET request — no body'}
 async function send(){const [m,p]=$('pEp').value.split(' '),t=performance.now();let r;const body=m==='GET'?undefined:$('pBody').value;

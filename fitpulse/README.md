@@ -1,5 +1,5 @@
 # FitPulse — Personal Fitness Performance & Progress Management System
-Majit · 23MIC0052 · Partner project: FitMetrics (Yasash S · 23MIC0060)
+Maajith · 23MIC0052 · Partner project: FitMetrics (Yasash S · 23MIC0060)
 
 FitPulse answers **"what does this person need, and how are they progressing?"**
 FitMetrics answers **"what did each workout actually do?"** — FitPulse never computes workout

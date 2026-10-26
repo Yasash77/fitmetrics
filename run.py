@@ -9,7 +9,7 @@ What it does:
   3. starts the FitMetrics API + website on http://localhost:8000,
   4. opens the website in your browser.
 
-Use Majit's real FitPulse instead of the stand-in:
+Use Maajith's real FitPulse instead of the stand-in:
     Windows (cmd):       set FITPULSE_BASE_URL=https://<his-url>/api/v1 && python run.py
     PowerShell:          $env:FITPULSE_BASE_URL="https://<his-url>/api/v1"; python run.py
     macOS / Linux:       FITPULSE_BASE_URL=https://<his-url>/api/v1 python run.py
@@ -89,7 +89,7 @@ def main():
         partner_dir = ROOT / "fitpulse" / "backend"
         env = dict(os.environ, FITMETRICS_BASE_URL=f"http://127.0.0.1:{port}/api/v1")
         if (partner_dir / "app" / "main.py").exists():
-            # real FitPulse project (Majit, 23MIC0052) lives in this repo — run it as the partner service
+            # real FitPulse project (Maajith, 23MIC0052) lives in this repo — run it as the partner service
             cmd, cwd = [sys.executable, "-m", "uvicorn", "app.main:app"], partner_dir
             partner = f"FitPulse (from ./fitpulse) on port {stub_port}"
         else:
