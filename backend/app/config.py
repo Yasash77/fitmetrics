@@ -11,7 +11,7 @@ API_PREFIX = "/api/v1"
 
 # Partner service (FitPulse, 23MIC0052)
 # Set this to Majit's deployed FitPulse URL. run.py points it at the local stand-in (fitpulse_stub.py).
-FITPULSE_BASE_URL = os.getenv("FITPULSE_BASE_URL", "https://fitpulse-api.onrender.com/api/v1")
+FITPULSE_BASE_URL = os.getenv("FITPULSE_BASE_URL", "https://fitpulse-api.onrender.com/api/v1").strip().rstrip("/")
 FITPULSE_API_KEY = os.getenv("FITPULSE_API_KEY", "")          # sent if the partner requires a key
 FITPULSE_TIMEOUT = float(os.getenv("FITPULSE_TIMEOUT", "8"))
 

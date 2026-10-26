@@ -10,7 +10,7 @@ VERSION = "4.0.0"
 API_PREFIX = "/api/v1"
 
 # Partner service (FitMetrics, 23MIC0060 - Yasash S). run.py points this at the local FitMetrics copy.
-FITMETRICS_BASE_URL = os.getenv("FITMETRICS_BASE_URL", "https://fitmetrics-api.onrender.com/api/v1")
+FITMETRICS_BASE_URL = os.getenv("FITMETRICS_BASE_URL", "https://fitmetrics-api.onrender.com/api/v1").strip().rstrip("/")
 FITMETRICS_API_KEY = os.getenv("FITMETRICS_API_KEY", "fm_partner_23mic0052")
 FITMETRICS_TIMEOUT = float(os.getenv("FITMETRICS_TIMEOUT", "8"))
 
